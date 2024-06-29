@@ -1,14 +1,14 @@
-package shared.src.test.java.passoff.chess;
+package passoff.chess;
 
-import shared.src.main.java.chess.ChessBoard;
-import shared.src.main.java.chess.ChessGame;
-import shared.src.main.java.chess.ChessPiece;
-import shared.src.main.java.chess.ChessPosition;
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static shared.src.test.java.passoff.chess.TestUtilities.loadBoard;
+import static passoff.chess.TestUtilities.loadBoard;
 
 public class ChessBoardTests {
 

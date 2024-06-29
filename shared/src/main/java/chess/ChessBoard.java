@@ -1,4 +1,4 @@
-package shared.src.main.java.chess;
+package chess;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.

@@ -1,7 +1,6 @@
-package shared.src.test.java.passoff.chess;
+package passoff.chess;
 
-
-import shared.src.main.java.chess.*;
+import chess.*;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.Collection;

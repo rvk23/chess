@@ -1,8 +1,8 @@
-package shared.src.test.java.passoff.chess;
+package passoff.chess;
 
-import shared.src.main.java.chess.ChessMove;
-import shared.src.main.java.chess.ChessPiece;
-import shared.src.main.java.chess.ChessPosition;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

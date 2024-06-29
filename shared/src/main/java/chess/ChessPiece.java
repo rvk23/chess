@@ -1,4 +1,4 @@
-package shared.src.main.java.chess;
+package chess;
 
 import java.util.Collection;
 

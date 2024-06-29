@@ -1,4 +1,4 @@
-package shared.src.main.java.chess;
+package chess;
 
 /**
  * Represents moving a chess piece on a chessboard
