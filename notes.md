@@ -1,0 +1,1 @@
+just adding stuff to my notes.md
