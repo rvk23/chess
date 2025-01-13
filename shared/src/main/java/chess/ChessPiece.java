@@ -50,4 +50,5 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return new ArrayList<>();
     }
+
 }
