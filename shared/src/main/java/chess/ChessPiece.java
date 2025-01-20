@@ -118,7 +118,7 @@ public class ChessPiece {
                 if (piece != null) {
 
                     if (piece.getTeamColor() != this.getTeamColor()) {
-                        moves.add(new ChessMove(myPosition, newPosition, null));
+                        moves.add(new ChessMove(myPosition, onePosition, null));
                     }
                     break;
                 }
