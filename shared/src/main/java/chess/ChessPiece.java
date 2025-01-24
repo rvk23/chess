@@ -235,42 +235,28 @@ public class ChessPiece {
                     ChessPosition zeroPosition = new ChessPosition(row, col);
                     ChessPiece piece = board.getPiece(onePosition);
 
-
-                    if (startRow == 1) {
-                        ChessPosition rightLookPosition = new ChessPosition(row + 2, col + 2);
-                        ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
-                        if (upRightLookPiece != null)
-                        {
-                            if (upRightLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, rightLookPosition, null));
-                            }
-                        }
-                        ChessPosition leftLookPosition = new ChessPosition(row + 1, col);
-                        ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
-                        if (upLeftLookPiece != null)
-                        {
-                            if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, leftLookPosition, null));
-                            }
-                        }
-                        if (piece == null)
-                        {
-                            ChessPosition doubleMove = new ChessPosition(row + 1 + dir[0], col + 1 + dir[1]);
-                            ChessPiece doublePiece = board.getPiece(doubleMove);
-                            moves.add(new ChessMove(myPosition, onePosition, null));
-                            if (doublePiece == null)
-                            {
-                                moves.add(new ChessMove(myPosition, doubleMove, null));
-                            }
-                        }
-
-                        break;
-
-                    }
-                    else if (startCol == 7)
+                    if (startCol == 7)
                     {
+                        if (startRow == 1) {
+
+                            ChessPosition leftLookPosition = new ChessPosition(row + 1, col);
+                            ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                            if (upLeftLookPiece != null) {
+                                if (upLeftLookPiece.getTeamColor() != this.getTeamColor()) {
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, null));
+                                }
+                            }
+                            if (piece == null) {
+                                ChessPosition doubleMove = new ChessPosition(row + 1 + dir[0], col + 1 + dir[1]);
+                                ChessPiece doublePiece = board.getPiece(doubleMove);
+                                moves.add(new ChessMove(myPosition, onePosition, null));
+                                if (doublePiece == null) {
+                                    moves.add(new ChessMove(myPosition, doubleMove, null));
+                                }
+                            }
+
+                            break;
+                        }
                         if (startRow == 6)
                         {
                             ChessPosition leftLookPosition = new ChessPosition(row + 1, col);
@@ -286,6 +272,14 @@ public class ChessPiece {
 
                                 }
                             }
+                            if (piece == null)
+                            {
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.QUEEN));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.KNIGHT));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.ROOK));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.BISHOP));
+                            }
+                            break;
                         }
                         ChessPosition leftLookPosition = new ChessPosition(row + 1, col);
                         ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
@@ -298,76 +292,176 @@ public class ChessPiece {
                         }
                         if (piece == null)
                         {
-                            ChessPosition doubleMove = new ChessPosition(row + 1 + dir[0], col + 1 + dir[1]);
                             moves.add(new ChessMove(myPosition, onePosition, null));
                         }
 
                         break;
 
                     }
-                    else if (startRow == 6)
+                    else if (startCol == 0)
                     {
+                        if (startRow == 6)
+                        {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow + 1, startCol + 1);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null)
+                            {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.QUEEN));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.ROOK));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.BISHOP));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.KNIGHT));
+
+                                }
+                            }
+                            if (piece == null)
+                            {
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.QUEEN));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.KNIGHT));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.ROOK));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.BISHOP));
+                            }
+                            break;
+                        }
+                        if (startRow == 1)
+                        {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow + 1, startCol + 1);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null)
+                            {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, null));
+
+                                }
+                            }
+                            if (piece == null) {
+                                ChessPosition doubleMove = new ChessPosition(row + 1 + dir[0], col + 1 + dir[1]);
+                                ChessPiece doublePiece = board.getPiece(doubleMove);
+                                moves.add(new ChessMove(myPosition, onePosition, null));
+                                if (doublePiece == null) {
+                                    moves.add(new ChessMove(myPosition, doubleMove, null));
+                                }
+                            }
+
+                            break;
+                        }
                         ChessPosition rightLookPosition = new ChessPosition(startRow + 1, startCol + 1);
                         ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
                         if (upRightLookPiece != null)
                         {
                             if (upRightLookPiece.getTeamColor() != this.getTeamColor())
                             {
-                                moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.QUEEN));
-                                moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.ROOK));
-                                moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.BISHOP));
-                                moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.KNIGHT));
-
-                            }
-                        }
-                        ChessPosition leftLookPosition = new ChessPosition(startRow + 2, startCol);
-                        ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
-                        if (upLeftLookPiece != null)
-                        {
-                            if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.QUEEN));
-                                moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.ROOK));
-                                moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.BISHOP));
-                                moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.KNIGHT));
-
-                            }
-                        }
-                        if (piece == null)
-                        {
-                            moves.add(new ChessMove(myPosition, onePosition, PieceType.QUEEN));
-                            moves.add(new ChessMove(myPosition, onePosition, PieceType.KNIGHT));
-                            moves.add(new ChessMove(myPosition, onePosition, PieceType.ROOK));
-                            moves.add(new ChessMove(myPosition, onePosition, PieceType.BISHOP));
-                        }
-
-                    }
-                    else
-                    {
-                        ChessPosition rightLookPosition = new ChessPosition(row + 2, col + 2);
-                        ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
-                        if (upRightLookPiece != null)
-                        {
-                            if (upRightLookPiece.getTeamColor() != this.getTeamColor())
-                            {
                                 moves.add(new ChessMove(myPosition, rightLookPosition, null));
+
                             }
                         }
-                        ChessPosition leftLookPosition = new ChessPosition(row + 1, col);
-                        ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
-                        if (upLeftLookPiece != null)
-                        {
-                            if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, leftLookPosition, null));
-                            }
-                        }
+
                         if (piece == null)
                         {
                             moves.add(new ChessMove(myPosition, onePosition, null));
                         }
 
                         break;
+
+
+
+                    }
+                    else
+                    {
+                        if (startRow == 1) {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow + 1, startCol + 1);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null) {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor()) {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, null));
+                                }
+                            }
+                            ChessPosition leftLookPosition = new ChessPosition(row + 1, col);
+                            ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                            if (upLeftLookPiece != null) {
+                                if (upLeftLookPiece.getTeamColor() != this.getTeamColor()) {
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, null));
+                                }
+                            }
+                            if (piece == null) {
+                                ChessPosition doubleMove = new ChessPosition(row + 1 + dir[0], col + 1 + dir[1]);
+                                ChessPiece doublePiece = board.getPiece(doubleMove);
+                                moves.add(new ChessMove(myPosition, onePosition, null));
+                                if (doublePiece == null) {
+                                    moves.add(new ChessMove(myPosition, doubleMove, null));
+                                }
+                            }
+
+                            break;
+                        }
+                        else if (startRow == 6) {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow + 1, startCol + 1);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null)
+                            {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.QUEEN));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.ROOK));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.BISHOP));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.KNIGHT));
+
+                                }
+                            }
+                            ChessPosition leftLookPosition = new ChessPosition(row + 1, col);
+                            ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                            if (upLeftLookPiece != null)
+                            {
+                                if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.QUEEN));
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.ROOK));
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.BISHOP));
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.KNIGHT));
+
+                                }
+                            }
+                            if (piece == null)
+                            {
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.QUEEN));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.KNIGHT));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.ROOK));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.BISHOP));
+                            }
+                            break;
+
+                        }
+                        else
+                        {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow + 1, startCol + 1);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null)
+                            {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, null));
+
+                                }
+                            }
+                            ChessPosition leftLookPosition = new ChessPosition(row + 1, col);
+                            ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                            if (upLeftLookPiece != null)
+                            {
+                                if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, null));
+                                }
+                            }
+
+                            if (piece == null)
+                            {
+                                moves.add(new ChessMove(myPosition, onePosition, null));
+                            }
+
+                            break;
+                        }
                     }
 
 
@@ -390,7 +484,118 @@ public class ChessPiece {
                     ChessPosition onePosition = new ChessPosition(row + 1, col + 1);
                     ChessPiece piece = board.getPiece(onePosition);
 
-                    if (startRow== 6) {
+                    if (startCol == 7)
+                    {
+                        if (startRow == 6) {
+
+                            ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
+                            ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                            if (upLeftLookPiece != null) {
+                                if (upLeftLookPiece.getTeamColor() != this.getTeamColor()) {
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, null));
+                                }
+                            }
+                            if (piece == null) {
+                                ChessPosition doubleMove = new ChessPosition(row + 1 + dir[0], col + 1 + dir[1]);
+                                ChessPiece doublePiece = board.getPiece(doubleMove);
+                                moves.add(new ChessMove(myPosition, onePosition, null));
+                                if (doublePiece == null) {
+                                    moves.add(new ChessMove(myPosition, doubleMove, null));
+                                }
+                            }
+
+                            break;
+                        }
+                        if (startRow == 1)
+                        {
+                            ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
+                            ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                            if (upLeftLookPiece != null)
+                            {
+                                if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.QUEEN));
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.ROOK));
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.BISHOP));
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.KNIGHT));
+
+                                }
+                            }
+                            if (piece == null)
+                            {
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.QUEEN));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.KNIGHT));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.ROOK));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.BISHOP));
+                            }
+                            break;
+                        }
+                        ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
+                        ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                        if (upLeftLookPiece != null)
+                        {
+                            if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
+                            {
+                                moves.add(new ChessMove(myPosition, leftLookPosition, null));
+                            }
+                        }
+                        if (piece == null)
+                        {
+                            moves.add(new ChessMove(myPosition, onePosition, null));
+                        }
+
+                        break;
+
+                    }
+                    else if (startCol == 0)
+                    {
+                        if (startRow == 1)
+                        {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow, startCol + 2);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null)
+                            {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.QUEEN));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.ROOK));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.BISHOP));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.KNIGHT));
+
+                                }
+                            }
+                            if (piece == null)
+                            {
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.QUEEN));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.KNIGHT));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.ROOK));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.BISHOP));
+                            }
+                            break;
+                        }
+                        if (startRow == 6)
+                        {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow, startCol + 2);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null)
+                            {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, null));
+
+                                }
+                            }
+                            if (piece == null) {
+                                ChessPosition doubleMove = new ChessPosition(row + 1 + dir[0], col + 1 + dir[1]);
+                                ChessPiece doublePiece = board.getPiece(doubleMove);
+                                moves.add(new ChessMove(myPosition, onePosition, null));
+                                if (doublePiece == null) {
+                                    moves.add(new ChessMove(myPosition, doubleMove, null));
+                                }
+                            }
+
+                            break;
+                        }
                         ChessPosition rightLookPosition = new ChessPosition(startRow, startCol + 2);
                         ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
                         if (upRightLookPiece != null)
@@ -398,112 +603,113 @@ public class ChessPiece {
                             if (upRightLookPiece.getTeamColor() != this.getTeamColor())
                             {
                                 moves.add(new ChessMove(myPosition, rightLookPosition, null));
-                            }
-                        }
-                        ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
-                        ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
-                        if (upLeftLookPiece != null)
-                        {
-                            if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, leftLookPosition, null));
-                            }
-                        }
-                        if (piece == null)
-                        {
-                            ChessPosition doubleMove = new ChessPosition(row + 1 + dir[0], col + 1 + dir[1]);
-                            ChessPiece doublePiece = board.getPiece(doubleMove);
-                            moves.add(new ChessMove(myPosition, onePosition, null));
-                            if (doublePiece == null)
-                            {
-                                moves.add(new ChessMove(myPosition, doubleMove, null));
+
                             }
                         }
 
-                        break;
-
-                    }
-                    else if (startRow == 1)
-                    {
-                        ChessPosition rightLookPosition = new ChessPosition(startRow, startCol + 2);
-                        ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
-                        if (upRightLookPiece != null)
-                        {
-                            if (upRightLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.QUEEN));
-                                moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.ROOK));
-                                moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.KNIGHT));
-                                moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.BISHOP));
-                            }
-                        }
-                        ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
-                        ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
-                        if (upLeftLookPiece != null)
-                        {
-
-                            if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.QUEEN));
-                                moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.KNIGHT));
-                                moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.BISHOP));
-                                moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.ROOK));
-                            }
-                        }
-                        if (piece == null)
-                        {
-                            moves.add(new ChessMove(myPosition, onePosition, PieceType.QUEEN));
-                            moves.add(new ChessMove(myPosition, onePosition, PieceType.ROOK));
-                            moves.add(new ChessMove(myPosition, onePosition, PieceType.BISHOP));
-                            moves.add(new ChessMove(myPosition, onePosition, PieceType.KNIGHT));
-                        }
-
-                        break;
-                    }
-                    else if (startCol == 7)
-                    {
-                        ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
-                        ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
-                        if (upLeftLookPiece != null)
-                        {
-                            if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, leftLookPosition, null));
-                            }
-                        }
                         if (piece == null)
                         {
                             moves.add(new ChessMove(myPosition, onePosition, null));
                         }
 
                         break;
+
+
+
                     }
                     else
                     {
-                        ChessPosition rightLookPosition = new ChessPosition(startRow, startCol + 2);
-                        ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
-                        if (upRightLookPiece != null)
-                        {
-                            if (upRightLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, rightLookPosition, null));
+                        if (startRow == 6) {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow, startCol + 2);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null) {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor()) {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, null));
+                                }
                             }
-                        }
-                        ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
-                        ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
-                        if (upLeftLookPiece != null)
-                        {
-                            if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
-                            {
-                                moves.add(new ChessMove(myPosition, leftLookPosition, null));
+                            ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
+                            ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                            if (upLeftLookPiece != null) {
+                                if (upLeftLookPiece.getTeamColor() != this.getTeamColor()) {
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, null));
+                                }
                             }
+                            if (piece == null) {
+                                ChessPosition doubleMove = new ChessPosition(row + 1 + dir[0], col + 1 + dir[1]);
+                                ChessPiece doublePiece = board.getPiece(doubleMove);
+                                moves.add(new ChessMove(myPosition, onePosition, null));
+                                if (doublePiece == null) {
+                                    moves.add(new ChessMove(myPosition, doubleMove, null));
+                                }
+                            }
+                            break;
                         }
-                        if (piece == null)
-                        {
-                            moves.add(new ChessMove(myPosition, onePosition, null));
-                        }
+                        else if (startRow == 1) {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow, startCol + 2);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null)
+                            {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.QUEEN));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.ROOK));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.BISHOP));
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, PieceType.KNIGHT));
 
-                        break;
+                                }
+                            }
+                            ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
+                            ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                            if (upLeftLookPiece != null)
+                            {
+                                if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.QUEEN));
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.ROOK));
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.BISHOP));
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, PieceType.KNIGHT));
+
+                                }
+                            }
+                            if (piece == null)
+                            {
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.QUEEN));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.KNIGHT));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.ROOK));
+                                moves.add(new ChessMove(myPosition, onePosition, PieceType.BISHOP));
+                            }
+                            break;
+
+                        }
+                        else
+                        {
+                            ChessPosition rightLookPosition = new ChessPosition(startRow, startCol + 2);
+                            ChessPiece upRightLookPiece = board.getPiece(rightLookPosition);
+                            if (upRightLookPiece != null)
+                            {
+                                if (upRightLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, rightLookPosition, null));
+
+                                }
+                            }
+                            ChessPosition leftLookPosition = new ChessPosition(startRow, startCol);
+                            ChessPiece upLeftLookPiece = board.getPiece(leftLookPosition);
+                            if (upLeftLookPiece != null)
+                            {
+                                if (upLeftLookPiece.getTeamColor() != this.getTeamColor())
+                                {
+                                    moves.add(new ChessMove(myPosition, leftLookPosition, null));
+                                }
+                            }
+
+                            if (piece == null)
+                            {
+                                moves.add(new ChessMove(myPosition, onePosition, null));
+                            }
+
+                            break;
+                        }
                     }
 
 
