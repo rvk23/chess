@@ -102,5 +102,6 @@ public class ChessBoard {
 
 
         // part 1 don't know why I didn't have 8 commits
+        // part 2 don't know why I didn't have 8 commits
     }
 }
