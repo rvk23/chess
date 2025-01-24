@@ -100,5 +100,7 @@ public class ChessBoard {
         squares[0][4] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
         squares[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
 
+
+        // part 1 don't know why I didn't have 8 commits
     }
 }
