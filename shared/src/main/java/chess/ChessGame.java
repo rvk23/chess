@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -12,11 +13,20 @@ public class ChessGame {
 
     private ChessGame.TeamColor turn;
 
+    private ChessBoard board;
+
+    private boolean over;
+
     public ChessGame() {
 // adding turn
         turn = TeamColor.WHITE;
+        board = new ChessBoard();
+        board.resetBoard();
+
 
     }
+
+
 
     /**
      * @return Which team's turn it is
@@ -31,7 +41,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        turn = team;
     }
 
     /**
@@ -60,7 +70,34 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            throw new InvalidMoveException("There is no piece here.");
+        }
+
+        if (piece.getTeamColor() != turn) {
+            throw new InvalidMoveException("This isn't your turn.");
+        }
+
+        var validMoves = piece.pieceMoves(board, startPosition);
+
+        if (!validMoves.contains(move)) {
+            throw new InvalidMoveException("That move is not allowed.");
+        }
+
+        board.addPiece(endPosition, piece);
+        board.addPiece(startPosition, null);
+
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && (endPosition.getRow() == 0 || endPosition.getRow() == 7)) {
+            if (move.getPromotionPiece() == null) {
+                throw new InvalidMoveException("Pawn needs to be promoted.");
+            }
+            board.addPiece(endPosition, new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+        }
+        turn = (turn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
     }
 
     /**
