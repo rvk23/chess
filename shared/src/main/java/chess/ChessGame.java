@@ -13,7 +13,7 @@ public class ChessGame {
     private ChessGame.TeamColor turn;
 
     public ChessGame() {
-
+// adding turn
         turn = TeamColor.WHITE;
 
     }

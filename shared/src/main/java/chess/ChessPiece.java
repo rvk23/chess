@@ -745,13 +745,7 @@ public class ChessPiece {
             // inbounds
             while (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
 
-                ChessPosition startPosition = new ChessPosition(startRow, startCol);
-
-                ChessPosition zeroPosition = new ChessPosition(row, col);
-
                 ChessPosition onePosition = new ChessPosition(row + 1, col + 1);
-
-                ChessPosition currentPosition = new ChessPosition(row + dir[0], col + dir[1]);
 
                 if (row < 7) {
                     if (col < 7) {
@@ -796,8 +790,6 @@ public class ChessPiece {
 
             // inbounds
             while (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
-
-                ChessPosition zeroPosition = new ChessPosition(row, col);
 
                 ChessPosition onePosition = new ChessPosition(row + 1, col + 1);
 
