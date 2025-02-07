@@ -173,6 +173,32 @@ public class ChessGame {
         return false;
     }
 
+    private boolean isLegalMove(ChessPosition startPosition, ChessMove move){
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            return false;
+        }
+
+        Collection<ChessMove> validMoves = validMoves(startPosition);
+
+        if (!validMoves.contains(move)) {
+            return false;
+        }
+
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece captured = board.getPiece(endPosition);
+        board.addPiece(endPosition, piece);
+        board.addPiece(startPosition, null);
+
+        boolean ifInCheck = isInCheck(piece.getTeamColor());
+
+        board.addPiece(startPosition, piece);
+        board.addPiece(endPosition, captured);
+
+        return !ifInCheck;
+    }
+
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -180,7 +206,28 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)){
+            return false;
+        }
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++){
+                ChessPosition position = new ChessPosition(row + 1, col + 1);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null && piece.getTeamColor() == teamColor){
+                    Collection<ChessMove> moves = validMoves(position);
+
+
+                    for (ChessMove move : moves) {
+                        if (isLegalMove(position, move)){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
