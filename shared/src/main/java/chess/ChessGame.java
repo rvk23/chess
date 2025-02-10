@@ -234,6 +234,8 @@ public class ChessGame {
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
+
+    // get the pawns for checkmate
     public boolean isInCheckmate(TeamColor teamColor) {
         if (!isInCheck(teamColor)){
             return false;
