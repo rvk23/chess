@@ -3,6 +3,7 @@ package dataaccess;
 import model.GameData;
 import java.util.HashMap;
 import java.util.Map;
+// wifi check
 
 public class GameDAO {
     private final Map<Integer, GameData> games = new HashMap<>();
