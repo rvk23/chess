@@ -1,6 +1,11 @@
 package server;
 
 import spark.*;
+import handler.RegisterHandler;
+import service.UserService;
+import dataaccess.UserDAO;
+import dataaccess.AuthDAO;
+import com.google.gson.Gson;
 
 public class Server {
 
@@ -12,7 +17,15 @@ public class Server {
         // Register your endpoints and handle exceptions here.
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
+        // DAOs
+        UserDAO userDAO = new UserDAO();
+        AuthDAO authDAO = new AuthDAO();
+
+        // services
+        UserService userService = new UserService(userDAO, authDAO);
+
+        // handler
+        Spark.post("/user", new RegisterHandler(userService));
 
         Spark.awaitInitialization();
         return Spark.port();

@@ -24,4 +24,17 @@ public class UserService {
         authDAO.createAuth(token, user.username());
         return new AuthData(token, user.username());
     }
+    public AuthData login(String username, String password) {
+        UserData user = userDAO.getUser(username);
+
+        if (user == null || !user.password().equals(password)) {
+            throw new RuntimeException("Wrong password");
+        }
+
+        // need new auth token
+        String token = UUID.randomUUID().toString();
+        authDAO.createAuth(token, username);
+
+        return new AuthData(token, username);
+    }
 }
