@@ -17,7 +17,7 @@ public class UserService {
 
     public AuthData register(UserData user) {
         if (userDAO.getUser(user.username()) != null) {
-            throw new RuntimeException("That's already taken");
+            throw new RuntimeException("Thats already taken");
         }
         userDAO.addUser(user);
         String token = UUID.randomUUID().toString();

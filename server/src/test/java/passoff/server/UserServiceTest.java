@@ -36,6 +36,6 @@ public class UserServiceTest {
         Exception exception = assertThrows(RuntimeException.class, () -> {
             userService.register(user);
         });
-        assertEquals("That's already taken", exception.getMessage());
+        assertEquals("Thats already taken", exception.getMessage());
     }
 }
