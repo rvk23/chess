@@ -9,7 +9,6 @@ import spark.Response;
 import spark.Route;
 import java.util.Map;
 
-
 public class RegisterHandler implements Route {
     private final UserService userService;
     private final Gson gson = new Gson();
@@ -27,7 +26,7 @@ public class RegisterHandler implements Route {
             return gson.toJson(auth);
         } catch (RuntimeException e) {
             res.status(403);
-            return gson.toJson(Map.of("message", e.getMessage()));
+            return gson.toJson(Map.of("message", "Error: Username already taken"));
         }
     }
 }

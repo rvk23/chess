@@ -7,6 +7,7 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import java.util.Map;
 
 public class LoginHandler implements Route {
     private final UserService userService;
@@ -28,7 +29,7 @@ public class LoginHandler implements Route {
         catch (Exception e) {
             // if doesn't work
             res.status(401);
-            return gson.toJson("Wrong Login");
+            return gson.toJson(Map.of("message", "Wrong Login"));
         }
     }
 }

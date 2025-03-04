@@ -27,7 +27,7 @@ public class ListGamesHandler implements Route {
             String authToken = req.headers("authorization");
             if (authToken == null || authToken.isEmpty()) {
                 res.status(401);
-                return gson.toJson("unauthorized");
+                return gson.toJson("Error: Unauthorized");
             }
 
             //list of games
@@ -38,7 +38,7 @@ public class ListGamesHandler implements Route {
         }
         catch (RuntimeException e) {
             res.status(500);
-            return gson.toJson("unauthorized");
+            return gson.toJson("Error: Unauthorized");
         }
     }
 }

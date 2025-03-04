@@ -1,10 +1,9 @@
 package server;
 
 import spark.*;
-import handler.RegisterHandler;
-import service.UserService;
-import dataaccess.UserDAO;
-import dataaccess.AuthDAO;
+import handler.*;
+import service.*;
+import dataaccess.*;
 import com.google.gson.Gson;
 
 public class Server {
@@ -20,12 +19,26 @@ public class Server {
         // DAOs
         UserDAO userDAO = new UserDAO();
         AuthDAO authDAO = new AuthDAO();
+        GameDAO gameDAO = new GameDAO();
 
         // services
         UserService userService = new UserService(userDAO, authDAO);
+        GameService gameService = new GameService(gameDAO, authDAO);
 
         // handler
-        Spark.post("/user", new RegisterHandler(userService));
+        Spark.post("/user", new RegisterHandler(userService)); // Register user
+        Spark.post("/session", new LoginHandler(userService)); // Login user
+        Spark.delete("/session", new LogoutHandler(userService)); // Logout user
+        Spark.get("/game", new ListGamesHandler(gameService)); // List all games
+        Spark.post("/game", new CreateGameHandler(gameService)); // Create game
+        Spark.put("/game", new JoinGameHandler(gameService)); // Join game
+        Spark.delete("/db", new ClearHandler(userDAO, authDAO, gameDAO)); // Clear database
+
+        Spark.exception(Exception.class, (exception, req, res) -> {
+            res.status(500);
+            res.body(new Gson().toJson(new ErrorResponse("Error: " + exception.getMessage())));
+        });
+
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -34,5 +47,12 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    static class ErrorResponse {
+        String message;
+        ErrorResponse(String message) {
+            this.message = message;
+        }
     }
 }

@@ -18,11 +18,18 @@ public class GameDAO {
     }
 
     public GameData getGame(int gameID) {
-        return games.get(gameID);
+        return games.getOrDefault(gameID, null);
     }
 
     public List<GameData> getAllGames() {
         return new ArrayList<>(games.values());
+    }
+
+    public void updateGame(int gameID, GameData updatedGame) {
+        if (!games.containsKey(gameID)) {
+            throw new IllegalArgumentException("Error: Game ID not found");
+        }
+        games.put(gameID, updatedGame);
     }
 
     public void clear() {

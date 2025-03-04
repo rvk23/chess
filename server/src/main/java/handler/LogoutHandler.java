@@ -4,6 +4,7 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import java.util.Map;
 
 public class LogoutHandler implements Route {
     private final UserService userService;
@@ -26,9 +27,11 @@ public class LogoutHandler implements Route {
             userService.logout(authToken);
             res.status(200);
             return "{}";
-        } catch (RuntimeException e) {
-            res.status(401);
-            return gson.toJson("unauthorized");
         }
+        catch (RuntimeException e) {
+            res.status(401);
+            return gson.toJson(Map.of("message", "Unauthorized"));
+        }
+
     }
 }
