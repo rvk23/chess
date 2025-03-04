@@ -45,5 +45,8 @@ public class UserService {
         }
         authDAO.deleteAuth(authToken);
     }
+    public AuthDAO getAuthDAO() {
+        return authDAO;
+    }
 
 }
