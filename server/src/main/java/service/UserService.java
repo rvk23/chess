@@ -37,4 +37,13 @@ public class UserService {
 
         return new AuthData(token, username);
     }
+
+    public void logout(String authToken) {
+        AuthData auth = authDAO.getAuth(authToken);
+        if (auth == null) {
+            throw new RuntimeException("unauthorized");
+        }
+        authDAO.deleteAuth(authToken);
+    }
+
 }

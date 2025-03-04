@@ -29,7 +29,7 @@ public class LoginHandlerTest {
     }
 
     @Test
-    void handle_Success() {
+    void handleSuccess() {
         // register a user first
         UserData user = new UserData("user", "password", "abc123@test.com");
         userService.register(user);
@@ -53,7 +53,7 @@ public class LoginHandlerTest {
     }
 
     @Test
-    void handle_Fail_InvalidCredentials() {
+    void handleInvalid() {
         // login request to JSON
         String requestBody = gson.toJson(new UserData("wrongUser", "wrongPass", null));
 
