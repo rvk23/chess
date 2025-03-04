@@ -29,7 +29,7 @@ public class LoginHandler implements Route {
         catch (Exception e) {
             // if doesn't work
             res.status(401);
-            return gson.toJson(Map.of("message", "Wrong Login"));
+            return gson.toJson(Map.of("message", "Error: Wrong Login"));
         }
     }
 }

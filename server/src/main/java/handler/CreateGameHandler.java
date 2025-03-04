@@ -23,7 +23,7 @@ public class CreateGameHandler implements Route {
         String authToken = req.headers("authorization");
         if (authToken == null || !gameService.isAuthenticated(authToken)) {
             res.status(401);
-            return gson.toJson(Map.of("message", "Unauthorized"));
+            return gson.toJson(Map.of("message", "Error: Unauthorized"));
         }
 
 

@@ -20,13 +20,21 @@ public class RegisterHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
         UserData user = gson.fromJson(req.body(), UserData.class);
+        if (user.username() == null || user.username().trim().isEmpty() ||
+                user.password() == null || user.password().trim().isEmpty() ||
+                user.email() == null || user.email().trim().isEmpty()) {
+            res.status(400);
+            return gson.toJson(Map.of("message", "Error: Bad Request"));
+        }
+
         try {
             AuthData auth = userService.register(user);
             res.status(200);
             return gson.toJson(auth);
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             res.status(403);
-            return gson.toJson(Map.of("message", "Error: Username already taken"));
+            return gson.toJson(Map.of("message", "Error: Username Already Taken"));
         }
     }
 }
