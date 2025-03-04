@@ -3,6 +3,8 @@ package dataaccess;
 import model.GameData;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 // wifi check 2
 
 public class GameDAO {
@@ -17,6 +19,10 @@ public class GameDAO {
 
     public GameData getGame(int gameID) {
         return games.get(gameID);
+    }
+
+    public List<GameData> getAllGames() {
+        return new ArrayList<>(games.values());
     }
 
     public void clear() {
