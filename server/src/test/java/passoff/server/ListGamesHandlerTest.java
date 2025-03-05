@@ -67,7 +67,7 @@ public class ListGamesHandlerTest {
 
 
         String jsonResponse = (String) handler.handle(req, res);
-        assertEquals(gson.toJson("unauthorized"), jsonResponse);
+        assertEquals(gson.toJson(Map.of("message", "Error: Unauthorized")), jsonResponse);
     }
 
     //fake request

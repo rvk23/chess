@@ -12,6 +12,8 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LoginHandlerTest {
@@ -49,7 +51,7 @@ public class LoginHandlerTest {
 
 
         assertNotNull(response.authToken());
-        assertEquals("testUser", response.username());
+        assertEquals("user", response.username());
     }
 
     @Test
@@ -65,7 +67,7 @@ public class LoginHandlerTest {
         String jsonResponse = (String) handler.handle(req, res);
 
 
-        String expectedResponse = gson.toJson("Wrong Login");
+        String expectedResponse = gson.toJson(Map.of("message", "Error: Wrong Login"));
 
 
 

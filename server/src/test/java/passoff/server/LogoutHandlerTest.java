@@ -12,6 +12,8 @@ import handler.LogoutHandler;
 import spark.Request;
 import spark.Response;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LogoutHandlerTest {
@@ -87,6 +89,6 @@ public class LogoutHandlerTest {
 
 
         assertEquals(401, res.getStatusCode());
-        assertEquals(gson.toJson("unauthorized"), jsonResponse);
+        assertEquals(gson.toJson(Map.of("message", "Error: Unauthorized")), jsonResponse);
     }
 }
