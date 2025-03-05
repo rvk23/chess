@@ -38,14 +38,15 @@ public class JoinGameHandler implements Route {
             gameService.joinGame(authToken, gameID, playerColor);
             res.status(200);
             return "{}";
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             if (e.getMessage().contains("Error: Unauthorized")) {
                 res.status(401);
             }
             else if (e.getMessage().contains("Error: Invalid game ID") || e.getMessage().contains("Error: Invalid team color")) {
                 res.status(400);
             }
-            else if (e.getMessage().contains("Error: Already Taken")) {
+            else if (e.getMessage().contains("Error: White slot already taken") || e.getMessage().contains("Error: Black slot already taken")) {
                 res.status(403);
             }
             else {

@@ -22,23 +22,26 @@ public class ListGamesHandler implements Route {
 
     @Override
     public Object handle(Request req, Response res) {
+        String authToken = req.headers("authorization");
+
+        if (authToken == null || authToken.isEmpty()) {
+            res.status(401);
+            return gson.toJson(Map.of("message", "Error: Unauthorized"));
+        }
+
         try {
-
-            String authToken = req.headers("authorization");
-            if (authToken == null || authToken.isEmpty()) {
-                res.status(401);
-                return gson.toJson("Error: Unauthorized");
-            }
-
-            //list of games
             List<GameData> games = gameService.listGames(authToken);
             res.status(200);
             return gson.toJson(Map.of("games", games));
-
         }
-        catch (RuntimeException e) {
-            res.status(500);
-            return gson.toJson("Error: Unauthorized");
+        catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("Error: Unauthorized")) {
+                res.status(401);
+            }
+            else {
+                res.status(500);
+            }
+            return gson.toJson(Map.of("message", e.getMessage()));
         }
     }
 }

@@ -23,7 +23,7 @@ public class GameService {
     public List<GameData> listGames(String authToken) {
         AuthData auth = authDAO.getAuth(authToken);
         if (auth == null) {
-            throw new RuntimeException("Error: Unauthorized");
+            throw new IllegalArgumentException("Error: Unauthorized");
         }
         return gameDAO.getAllGames();
     }
@@ -57,12 +57,14 @@ public class GameService {
                 throw new IllegalArgumentException("Error: White slot already taken");
             }
             game = new GameData(gameID, auth.username(), game.blackUsername(), game.gameName(), game.game());
-        } else if ("BLACK".equalsIgnoreCase(playerColor)) {
+        }
+        else if ("BLACK".equalsIgnoreCase(playerColor)) {
             if (game.blackUsername() != null) {
                 throw new IllegalArgumentException("Error: Black slot already taken");
             }
             game = new GameData(gameID, game.whiteUsername(), auth.username(), game.gameName(), game.game());
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("Error: Invalid team color");
         }
 

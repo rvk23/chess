@@ -63,7 +63,7 @@ public class RegisterHandlerTest {
 
         // assertions
         assertEquals(403, res.status());
-        assertTrue(jsonResponse.contains("Thats already taken"));
+        assertTrue(jsonResponse.contains("Error: Username Already Taken"));
     }
 
 
