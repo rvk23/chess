@@ -29,7 +29,8 @@ public class DatabaseManager {
                 var port = Integer.parseInt(props.getProperty("db.port"));
                 CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
         }
     }
@@ -44,7 +45,9 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e) {
+            createTables();
+        }
+        catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
@@ -61,6 +64,49 @@ public class DatabaseManager {
      * }
      * </code>
      */
+
+    static void createTables() throws DataAccessException {
+        try (var conn = getConnection();
+             var stmt = conn.createStatement()) {
+
+            // tables
+
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS users (
+                    'id' INT NOT NULL AUTO_INCREMENT,
+                    'username' varchar(256) NOT NULL,
+                    'password_hash' varchar(256) NOT NULL,
+                    PRIMARY KEY ('id'),
+                    INDEX(username)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+                    """);
+
+
+            // game table
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS games (
+                    `id` INT NOT NULL AUTO_INCREMENT,
+                    `whitePlayer` varchar(256),
+                    `blackPlayer` varchar(256),
+                    `gameState` NOT NULL,
+                    PRIMARY KEY (`id`),
+                    KEY (`whitePlayer`) REFERENCES users(`username`),
+                    KEY (`blackPlayer`) REFERENCES users(`username`),
+                    INDEX(whitePlayer),
+                    INDEX(blackPlayer)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+                    """);
+
+
+        }
+        catch (SQLException e) {
+            throw new DataAccessException("Error creating tables: " + e.getMessage());
+        }
+    }
+
+
+
+
     static Connection getConnection() throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
