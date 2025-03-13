@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -53,6 +54,8 @@ public class JoinGameHandler implements Route {
                 res.status(500);
             }
             return gson.toJson(Map.of("message", e.getMessage()));
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }

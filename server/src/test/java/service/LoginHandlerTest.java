@@ -2,6 +2,7 @@ package service;
 
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -31,7 +32,7 @@ public class LoginHandlerTest {
     }
 
     @Test
-    void handleSuccess() {
+    void handleSuccess() throws DataAccessException {
         // register a user first
         UserData user = new UserData("user", "password", "abc123@test.com");
         userService.register(user);

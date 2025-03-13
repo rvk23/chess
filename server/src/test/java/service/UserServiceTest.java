@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -22,7 +23,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void registerSuccess() {
+    void registerSuccess() throws DataAccessException {
         UserData user = new UserData("user", "password", "abc123@email.com");
         AuthData auth = userService.register(user);
         assertNotNull(auth);
@@ -30,7 +31,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void registerFailUserTaken() {
+    void registerFailUserTaken() throws DataAccessException {
         UserData user = new UserData("user", "password", "abc123@test.com");
         userService.register(user);
         Exception exception = assertThrows(RuntimeException.class, () -> {

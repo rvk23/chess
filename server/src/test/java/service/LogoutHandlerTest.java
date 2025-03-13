@@ -2,6 +2,7 @@ package service;
 
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import service.UserService;
 import model.AuthData;
@@ -60,7 +61,7 @@ public class LogoutHandlerTest {
     }
 
     @Test
-    void handleSuccess() {
+    void handleSuccess() throws DataAccessException {
         //login a user
         UserData user = new UserData("user", "password", "abc123@test.com");
         userService.register(user);

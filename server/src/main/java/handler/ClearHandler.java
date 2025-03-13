@@ -2,6 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import spark.Request;
@@ -21,7 +22,7 @@ public class ClearHandler implements Route {
     }
 
     @Override
-    public Object handle(Request req, Response res) {
+    public Object handle(Request req, Response res) throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
         gameDAO.clear();

@@ -2,6 +2,7 @@ package service;
 
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.AuthData;
 import model.GameData;
@@ -32,7 +33,7 @@ public class ListGamesHandlerTest {
     }
 
     @Test
-    void handleSuccess() {
+    void handleSuccess() throws DataAccessException {
 
         String authToken = "validToken";
         authDAO.createAuth(authToken, "user");

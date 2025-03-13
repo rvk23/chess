@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.AuthData;
 import model.GameData;
@@ -20,7 +21,7 @@ public class GameService {
         return authDAO.getAuth(authToken) != null;
     }
 
-    public List<GameData> listGames(String authToken) {
+    public List<GameData> listGames(String authToken) throws DataAccessException {
         AuthData auth = authDAO.getAuth(authToken);
         if (auth == null) {
             throw new IllegalArgumentException("Error: Unauthorized");
@@ -28,7 +29,7 @@ public class GameService {
         return gameDAO.getAllGames();
     }
 
-    public int createGame(String authToken, String gameName) {
+    public int createGame(String authToken, String gameName) throws DataAccessException {
         AuthData auth = authDAO.getAuth(authToken);
         if (auth == null) {
             throw new IllegalArgumentException("Error: Unauthorized");
@@ -41,7 +42,7 @@ public class GameService {
         return gameDAO.createGame(gameName);
     }
 
-    public void joinGame(String authToken, int gameID, String playerColor) {
+    public void joinGame(String authToken, int gameID, String playerColor) throws DataAccessException {
         AuthData auth = authDAO.getAuth(authToken);
         if (auth == null) {
             throw new IllegalArgumentException("Error: Unauthorized");

@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import model.UserData;
 import model.AuthData;
 import service.UserService;
@@ -35,6 +36,8 @@ public class RegisterHandler implements Route {
         catch (RuntimeException e) {
             res.status(403);
             return gson.toJson(Map.of("message", "Error: Username Already Taken"));
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }

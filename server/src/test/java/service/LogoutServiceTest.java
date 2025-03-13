@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import service.UserService;
 import model.AuthData;
@@ -23,7 +24,7 @@ public class LogoutServiceTest {
     }
 
     @Test
-    void logoutSuccess() {
+    void logoutSuccess() throws DataAccessException {
         UserData user = new UserData("user", "password", "ac123@test.com");
         userService.register(user);
         AuthData auth = userService.login(user.username(), user.password());

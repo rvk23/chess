@@ -2,6 +2,7 @@ package service;
 
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import service.UserService;
 import model.AuthData;
@@ -25,7 +26,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    void login() {
+    void login() throws DataAccessException {
         UserData user = new UserData("user", "password", "abc123@test.com");
         userService.register(user);
 
@@ -35,7 +36,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    void loginWrongPassword() {
+    void loginWrongPassword() throws DataAccessException {
         UserData user = new UserData("user", "password", "abc123@test.com");
         userService.register(user);
 

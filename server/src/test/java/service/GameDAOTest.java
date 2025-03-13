@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ public class GameDAOTest {
     }
 
     @Test
-    void createGameSuccess() {
+    void createGameSuccess() throws DataAccessException {
         int gameID = gameDAO.createGame("New Chess Game");
         GameData game = gameDAO.getGame(gameID);
         assertNotNull(game);
@@ -25,12 +26,12 @@ public class GameDAOTest {
     }
 
     @Test
-    void failGameNotFound() {
+    void failGameNotFound() throws DataAccessException {
         assertNull(gameDAO.getGame(9999)); // Non-existent game
     }
 
     @Test
-    void clear() {
+    void clear() throws DataAccessException {
         gameDAO.createGame("Game1");
         gameDAO.clear();
         assertNull(gameDAO.getGame(1));

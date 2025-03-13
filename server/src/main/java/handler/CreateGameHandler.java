@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import model.GameData;
 import dataaccess.AuthDAO;
 import service.GameService;
@@ -19,7 +20,7 @@ public class CreateGameHandler implements Route {
     }
 
     @Override
-    public Object handle(Request req, Response res) {
+    public Object handle(Request req, Response res) throws DataAccessException {
         String authToken = req.headers("authorization");
         if (authToken == null || !gameService.isAuthenticated(authToken)) {
             res.status(401);
