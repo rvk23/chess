@@ -27,7 +27,7 @@ public class DatabaseManager {
 
                 var host = props.getProperty("db.host");
                 var port = Integer.parseInt(props.getProperty("db.port"));
-                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
+                CONNECTION_URL = String.format("jdbc:mysql://%s:%d/%s", host, port, DATABASE_NAME);
             }
         }
         catch (Exception ex) {
@@ -38,17 +38,15 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
+    // change to connect
     static void createDatabase() throws DataAccessException {
-        try {
-            var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.executeUpdate();
-            }
-            createTables();
-        }
-        catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+        try (var conn = DriverManager.getConnection(CONNECTION_URL.replace("/" + DATABASE_NAME, ""), USER, PASSWORD);
+             var stmt = conn.createStatement()) {
+
+            String createDB = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
+            stmt.executeUpdate(createDB);
+        } catch (SQLException e) {
+            throw new DataAccessException("Error creating database: " + e.getMessage());
         }
     }
 
@@ -110,11 +108,11 @@ public class DatabaseManager {
 
     static Connection getConnection() throws DataAccessException {
         try {
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog(DATABASE_NAME);
-            return conn;
+            // check database before
+            createDatabase();
+            return DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Error connecting to database: " + e.getMessage());
         }
     }
 }
