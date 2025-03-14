@@ -9,6 +9,9 @@ import com.google.gson.Gson;
 public class Server {
 
     public int run(int desiredPort) {
+
+        DatabaseManager.initializeDatabase();
+
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
@@ -32,7 +35,12 @@ public class Server {
         Spark.get("/game", new ListGamesHandler(gameService)); // List all games
         Spark.post("/game", new CreateGameHandler(gameService)); // Create game
         Spark.put("/game", new JoinGameHandler(gameService)); // Join game
-        Spark.delete("/db", new ClearHandler(userDAO, authDAO, gameDAO)); // Clear database
+
+        Spark.delete("/db", (req, res) -> {
+            DatabaseManager.clearDatabase();
+            res.status(200);
+            return new Gson().toJson(new SuccessResponse("Database cleared successfully."));
+        });
 
         Spark.exception(Exception.class, (exception, req, res) -> {
             res.status(500);
@@ -51,8 +59,11 @@ public class Server {
 
     static class ErrorResponse {
         String message;
-        ErrorResponse(String message) {
-            this.message = message;
-        }
+        ErrorResponse(String message) { this.message = message; }
+    }
+
+    static class SuccessResponse {
+        String message;
+        SuccessResponse(String message) { this.message = message; }
     }
 }

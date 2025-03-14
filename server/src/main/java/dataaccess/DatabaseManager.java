@@ -9,6 +9,7 @@ public class DatabaseManager {
     private static final String USER;
     private static final String PASSWORD;
     private static final String CONNECTION_URL;
+    private static final String BASE_URL;
 
     /*
      * Load the database information for the db.properties file.
@@ -27,6 +28,8 @@ public class DatabaseManager {
             PASSWORD = props.getProperty("db.password");
             var host = props.getProperty("db.host");
             var port = Integer.parseInt(props.getProperty("db.port"));
+
+            BASE_URL = String.format("jdbc:mysql://%s:%d?serverTimezone=UTC", host, port);
             CONNECTION_URL = String.format("jdbc:mysql://%s:%d/%s?serverTimezone=UTC", host, port, DATABASE_NAME);
 
         } catch (Exception ex) {
@@ -39,7 +42,7 @@ public class DatabaseManager {
      */
     // change to connect
     public static void createDatabase() throws DataAccessException {
-        try (Connection conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+        try (Connection conn = DriverManager.getConnection(BASE_URL, USER, PASSWORD);
              Statement stmt = conn.createStatement()) {
 
             String createDB = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
@@ -50,6 +53,7 @@ public class DatabaseManager {
             throw new DataAccessException("Error creating database: " + e.getMessage());
         }
     }
+
 
 
     /**
@@ -69,8 +73,6 @@ public class DatabaseManager {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
 
-
-
             // users table
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS users (
@@ -83,7 +85,7 @@ public class DatabaseManager {
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """);
 
-            //games table
+            // games table
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS games (
                     id INT NOT NULL AUTO_INCREMENT,
@@ -99,8 +101,7 @@ public class DatabaseManager {
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """);
 
-
-            //auth tokens table
+            // auth tokens table
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS auth_tokens (
                     token VARCHAR(256) PRIMARY KEY,
@@ -109,9 +110,9 @@ public class DatabaseManager {
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """);
 
+            System.out.println("Tables ensured.");
 
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new DataAccessException("Error creating tables: " + e.getMessage());
         }
     }
@@ -120,13 +121,39 @@ public class DatabaseManager {
 
 
 
-
-    static Connection getConnection() throws DataAccessException {
+    public static Connection getConnection() throws DataAccessException {
         try {
-            createDatabase();
             return DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
         } catch (SQLException e) {
             throw new DataAccessException("Error connecting to database: " + e.getMessage());
+        }
+    }
+
+
+    public static void clearDatabase() throws DataAccessException {
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
+            stmt.execute("TRUNCATE TABLE auth_tokens;");
+            stmt.execute("TRUNCATE TABLE games;");
+            stmt.execute("TRUNCATE TABLE users;");
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
+
+            System.out.println("Database cleared.");
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Error clearing database: " + e.getMessage());
+        }
+    }
+
+    public static void initializeDatabase() {
+        try {
+            createDatabase();
+            createTables();
+        } catch (DataAccessException e) {
+            System.err.println("Database initialization failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
