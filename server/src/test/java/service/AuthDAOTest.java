@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ public class AuthDAOTest {
     }
 
     @Test
-    void createAuthSuccess() {
+    void createAuthSuccess() throws DataAccessException {
         authDAO.createAuth("token", "user");
         AuthData auth = authDAO.getAuth("token");
         assertNotNull(auth);
@@ -24,12 +25,12 @@ public class AuthDAOTest {
     }
 
     @Test
-    void getAuthFailNotFound() {
+    void getAuthFailNotFound() throws DataAccessException {
         assertNull(authDAO.getAuth("noToken"));
     }
 
     @Test
-    void clearSuccess() {
+    void clearSuccess() throws DataAccessException {
         authDAO.createAuth("token", "user");
         authDAO.clear();
         assertNull(authDAO.getAuth("token"));

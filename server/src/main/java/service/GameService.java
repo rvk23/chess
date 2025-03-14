@@ -17,7 +17,7 @@ public class GameService {
         this.authDAO = authDAO;
     }
 
-    public boolean isAuthenticated(String authToken) {
+    public boolean isAuthenticated(String authToken) throws DataAccessException {
         return authDAO.getAuth(authToken) != null;
     }
 

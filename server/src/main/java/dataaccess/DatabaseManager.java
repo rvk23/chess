@@ -2,7 +2,7 @@ package dataaccess;
 
 import java.sql.*;
 import java.util.Properties;
-// imports like sql?
+
 
 public class DatabaseManager {
     private static final String DATABASE_NAME;
@@ -15,23 +15,21 @@ public class DatabaseManager {
      */
     static {
         try {
+            Properties props = new Properties();
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
                 if (propStream == null) {
                     throw new Exception("Unable to load db.properties");
                 }
-                Properties props = new Properties();
                 props.load(propStream);
-                DATABASE_NAME = props.getProperty("db.name");
-                USER = props.getProperty("db.user");
-                PASSWORD = props.getProperty("db.password");
-
-                var host = props.getProperty("db.host");
-                var port = Integer.parseInt(props.getProperty("db.port"));
-                CONNECTION_URL = String.format("jdbc:mysql://%s:%d/%s", host, port, DATABASE_NAME);
             }
-        }
-        catch (Exception ex) {
-            throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
+            DATABASE_NAME = props.getProperty("db.name");
+            USER = props.getProperty("db.user");
+            PASSWORD = props.getProperty("db.password");
+            var host = props.getProperty("db.host");
+            var port = Integer.parseInt(props.getProperty("db.port"));
+            CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error loading db.properties: " + ex.getMessage());
         }
     }
 
@@ -39,16 +37,19 @@ public class DatabaseManager {
      * Creates the database if it does not already exist.
      */
     // change to connect
-    static void createDatabase() throws DataAccessException {
-        try (var conn = DriverManager.getConnection(CONNECTION_URL.replace("/" + DATABASE_NAME, ""), USER, PASSWORD);
-             var stmt = conn.createStatement()) {
+    public static void createDatabase() throws DataAccessException {
+        try (Connection conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+             Statement stmt = conn.createStatement()) {
 
             String createDB = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
             stmt.executeUpdate(createDB);
+            System.out.println("✅ Database ensured: " + DATABASE_NAME);
+
         } catch (SQLException e) {
             throw new DataAccessException("Error creating database: " + e.getMessage());
         }
     }
+
 
     /**
      * Create a connection to the database and sets the catalog based upon the
@@ -63,39 +64,54 @@ public class DatabaseManager {
      * </code>
      */
 
-    static void createTables() throws DataAccessException {
-        try (var conn = getConnection();
-             var stmt = conn.createStatement()) {
+    public static void createTables() throws DataAccessException {
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
 
-            // tables
+            // testing message
+            System.out.println("Dropping and recreating tables");
 
+
+            stmt.execute("DROP TABLE IF EXISTS auth_tokens, games, users");
+
+            // users table
             stmt.execute("""
-                    CREATE TABLE IF NOT EXISTS users (
-                    'id' INT NOT NULL AUTO_INCREMENT,
-                    'username' varchar(256) NOT NULL,
-                    'password_hash' varchar(256) NOT NULL,
-                    email varchar(256) NOT NULL,
-                    PRIMARY KEY ('id'),
+                    CREATE TABLE users (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    username VARCHAR(256) NOT NULL UNIQUE,
+                    password_hash VARCHAR(256) NOT NULL,
+                    email VARCHAR(256) NOT NULL,
+                    PRIMARY KEY (id),
                     INDEX(username)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """);
+            System.out.println("Users table created.");
 
-
-            // game table
+            //games table
             stmt.execute("""
-                    CREATE TABLE IF NOT EXISTS games (
-                    `id` INT NOT NULL AUTO_INCREMENT,
-                    `whitePlayer` varchar(256),
-                    `blackPlayer` varchar(256),
-                    `gameState` NOT NULL,
-                    PRIMARY KEY (`id`),
-                    KEY (`whitePlayer`) REFERENCES users(`username`),
-                    KEY (`blackPlayer`) REFERENCES users(`username`),
-                    INDEX(whitePlayer),
-                    INDEX(blackPlayer)
+                    CREATE TABLE games (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    whiteUsername VARCHAR(256),
+                    blackUsername VARCHAR(256),
+                    gameState TEXT NOT NULL,
+                    PRIMARY KEY (id),
+                    FOREIGN KEY (whiteUsername) REFERENCES users(username) ON DELETE SET NULL,
+                    FOREIGN KEY (blackUsername) REFERENCES users(username) ON DELETE SET NULL,
+                    INDEX(whiteUsername),
+                    INDEX(blackUsername)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """);
+            System.out.println("Games table created.");
 
+            //auth tokens table
+            stmt.execute("""
+                    CREATE TABLE auth_tokens (
+                    token VARCHAR(256) PRIMARY KEY,
+                    username VARCHAR(256) NOT NULL,
+                    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+                    """);
+            System.out.println("Auth tokens table created.");
 
         }
         catch (SQLException e) {
@@ -106,13 +122,22 @@ public class DatabaseManager {
 
 
 
+    private static boolean databaseCreated = false;
+
     static Connection getConnection() throws DataAccessException {
         try {
-            // check database before
-            createDatabase();
-            return DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            if (!databaseCreated) {
+                createDatabase();
+                databaseCreated = true;
+            }
+            Connection conn = DriverManager.getConnection(CONNECTION_URL + "/" + DATABASE_NAME, USER, PASSWORD);
+            conn.setAutoCommit(true);
+            return conn;
         } catch (SQLException e) {
             throw new DataAccessException("Error connecting to database: " + e.getMessage());
         }
     }
+
 }
+
+

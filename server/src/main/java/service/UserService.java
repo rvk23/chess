@@ -39,7 +39,7 @@ public class UserService {
         return new AuthData(token, username);
     }
 
-    public void logout(String authToken) {
+    public void logout(String authToken) throws DataAccessException {
         AuthData auth = authDAO.getAuth(authToken);
         if (auth == null) {
             throw new RuntimeException("unauthorized");

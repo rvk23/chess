@@ -1,4 +1,5 @@
 import server.Server;
+import dataaccess.*;
 
 import chess.*;
 
@@ -11,6 +12,19 @@ public class Main {
 
         Server server = new Server();
         server.run(8080);
+
+
+        // test database manually
+        try {
+            System.out.println("Ensuring database exists");
+            DatabaseManager.createDatabase();
+            System.out.println("Creating tables");
+            // create tables
+            DatabaseManager.createTables();
+            System.out.println("Tables created");
+        } catch (DataAccessException e) {
+            System.err.println("Error creating tables:  " + e.getMessage());
+        }
 
     }
 }
