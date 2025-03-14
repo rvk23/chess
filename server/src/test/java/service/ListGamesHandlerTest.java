@@ -35,29 +35,29 @@ public class ListGamesHandlerTest {
     @Test
     void handleSuccess() throws DataAccessException {
 
+        gameDAO.clear();
+        authDAO.clear();
+
         String authToken = "validToken";
         authDAO.createAuth(authToken, "user");
 
-        //games
+
         gameDAO.createGame("Game one");
         gameDAO.createGame("Game two");
-
 
         Request req = new FakeRequest(authToken);
         Response res = new FakeResponse();
 
-
         String jsonResponse = (String) handler.handle(req, res);
         assertNotNull(jsonResponse);
-
 
         var responseMap = gson.fromJson(jsonResponse, Map.class);
         List<?> games = (List<?>) responseMap.get("games");
 
-
         assertNotNull(games);
-        assertEquals(2, games.size());
+        assertEquals(2, games.size(), "The two created games should be listed");
     }
+
 
 
     @Test

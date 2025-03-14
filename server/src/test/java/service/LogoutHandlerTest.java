@@ -23,13 +23,18 @@ public class LogoutHandlerTest {
     private Gson gson;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws DataAccessException {
         UserDAO userDAO = new UserDAO();
         AuthDAO authDAO = new AuthDAO();
         userService = new UserService(userDAO, authDAO);
         handler = new LogoutHandler(userService);
         gson = new Gson();
+
+
+        userDAO.clear();
+        authDAO.clear();
     }
+
 
     private static class TestRequest extends Request {
         private final String authToken;

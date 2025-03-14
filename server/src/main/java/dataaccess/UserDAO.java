@@ -14,20 +14,26 @@ public class UserDAO {
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+            String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+
             stmt.setString(1, user.username());
-            stmt.setString(2, BCrypt.hashpw(user.password(), BCrypt.gensalt()));
+            stmt.setString(2, hashedPassword);
             stmt.setString(3, user.email());
 
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted == 0) {
                 throw new DataAccessException("User insert failed: No rows affected.");
             }
+
             System.out.println("User inserted: " + user.username());
+            System.out.println("Stored hashed password: " + hashedPassword);
 
         } catch (SQLException e) {
             throw new DataAccessException("Error inserting user: " + e.getMessage());
         }
     }
+
+
 
     public UserData getUser(String username) throws DataAccessException {
         String sql = "SELECT username, password_hash, email FROM users WHERE username = ?";
@@ -51,6 +57,9 @@ public class UserDAO {
         return null;
     }
 
+
+
+    /**
     public boolean verifyUser(String username, String providedPassword) throws DataAccessException {
         String sql = "SELECT password_hash FROM users WHERE username = ?";
 
@@ -61,6 +70,9 @@ public class UserDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     String storedHashedPassword = rs.getString("password_hash");
+
+                    System.out.println("Stored Hash for " + username + ": " + storedHashedPassword);
+
                     return BCrypt.checkpw(providedPassword, storedHashedPassword);
                 }
             }
@@ -69,6 +81,7 @@ public class UserDAO {
         }
         return false;
     }
+    */
 
 
 

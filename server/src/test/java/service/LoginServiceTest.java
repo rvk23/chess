@@ -19,11 +19,17 @@ public class LoginServiceTest {
     private UserDAO userDAO;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws DataAccessException {
         userDAO = new UserDAO();
         authDAO = new AuthDAO();
+
+        // clear
+        userDAO.clear();
+        authDAO.clear();
+
         userService = new UserService(userDAO, authDAO);
     }
+
 
     @Test
     void login() throws DataAccessException {
@@ -43,6 +49,7 @@ public class LoginServiceTest {
         Exception exception = assertThrows(RuntimeException.class, () -> {
             userService.login(user.username(), "wrongpassword");
         });
-        assertEquals("Wrong password", exception.getMessage());
+        assertEquals("Error: Unauthorized", exception.getMessage());
+
     }
 }

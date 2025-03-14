@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
 import service.UserService;
@@ -23,13 +24,16 @@ public class LoginHandler implements Route {
             UserData user = gson.fromJson(req.body(), UserData.class);
             AuthData auth = userService.login(user.username(), user.password());
             res.status(200);
-            // return JSON object if work
             return gson.toJson(auth);
-        }
-        catch (Exception e) {
-            // if doesn't work
+        } catch (IllegalArgumentException e) {
             res.status(401);
-            return gson.toJson(Map.of("message", "Error: Wrong Login"));
+            return gson.toJson(Map.of("message", e.getMessage()));
+        } catch (DataAccessException e) {
+            res.status(500);
+            return gson.toJson(Map.of("message", "Internal Server Error"));
         }
     }
+
+
+
 }

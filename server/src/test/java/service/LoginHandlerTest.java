@@ -23,13 +23,19 @@ public class LoginHandlerTest {
     private Gson gson;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws DataAccessException {
         UserDAO userDAO = new UserDAO();
         AuthDAO authDAO = new AuthDAO();
+
+        // clear user and tokens
+        userDAO.clear();
+        authDAO.clear();
+
         userService = new UserService(userDAO, authDAO);
         handler = new LoginHandler(userService);
         gson = new Gson();
     }
+
 
     @Test
     void handleSuccess() throws DataAccessException {
@@ -57,24 +63,21 @@ public class LoginHandlerTest {
 
     @Test
     void handleInvalid() {
-        // login request to JSON
-        String requestBody = gson.toJson(new UserData("wrongUser", "wrongPass", null));
 
+        String requestBody = gson.toJson(new UserData("wrongUser", "wrongPass", null));
 
         TestRequest req = new TestRequest(requestBody);
         TestResponse res = new TestResponse();
 
-
         String jsonResponse = (String) handler.handle(req, res);
 
 
-        String expectedResponse = gson.toJson(Map.of("message", "Error: Wrong Login"));
-
-
+        String expectedResponse = gson.toJson(Map.of("message", "Error: Unauthorized"));
 
         assertEquals(expectedResponse, jsonResponse);
         assertEquals(401, res.status());
     }
+
 
 
     private static class TestRequest extends Request {

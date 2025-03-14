@@ -69,15 +69,11 @@ public class DatabaseManager {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // testing message
-            System.out.println("Dropping and recreating tables");
 
-
-            stmt.execute("DROP TABLE IF EXISTS auth_tokens, games, users");
 
             // users table
             stmt.execute("""
-                    CREATE TABLE users (
+                    CREATE TABLE IF NOT EXISTS users (
                     id INT NOT NULL AUTO_INCREMENT,
                     username VARCHAR(256) NOT NULL UNIQUE,
                     password_hash VARCHAR(256) NOT NULL,
@@ -86,11 +82,10 @@ public class DatabaseManager {
                     INDEX(username)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """);
-            System.out.println("Users table created.");
 
             //games table
             stmt.execute("""
-                    CREATE TABLE games (
+                    CREATE TABLE IF NOT EXISTS games (
                     id INT NOT NULL AUTO_INCREMENT,
                     whiteUsername VARCHAR(256),
                     blackUsername VARCHAR(256),
@@ -103,17 +98,17 @@ public class DatabaseManager {
                     INDEX(blackUsername)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """);
-            System.out.println("Games table created.");
+
 
             //auth tokens table
             stmt.execute("""
-                    CREATE TABLE auth_tokens (
+                    CREATE TABLE IF NOT EXISTS auth_tokens (
                     token VARCHAR(256) PRIMARY KEY,
                     username VARCHAR(256) NOT NULL,
                     FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """);
-            System.out.println("Auth tokens table created.");
+
 
         }
         catch (SQLException e) {

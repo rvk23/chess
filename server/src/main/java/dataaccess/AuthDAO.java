@@ -7,25 +7,30 @@ import java.sql.*;
 
 public class AuthDAO {
     private final Map<String, AuthData> authTokens = new HashMap<>();
+
+
     public void createAuth(String authToken, String username) throws DataAccessException {
         String sql = "INSERT INTO auth_tokens (token, username) VALUES (?, ?)";
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            conn.setAutoCommit(false);
 
-            stmt.setString(1, authToken);
-            stmt.setString(2, username);
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, authToken);
+                stmt.setString(2, username);
 
-            int rowsInserted = stmt.executeUpdate();
-            if (rowsInserted == 0) {
-                throw new DataAccessException("Token insert failed: No rows affected.");
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted == 0) {
+                    throw new DataAccessException("Token insert failed: No rows affected.");
+                }
+                conn.commit();
+                System.out.println("Auth token stored for: " + username);
             }
-            System.out.println("Auth token stored for: " + username);
-
         } catch (SQLException e) {
             throw new DataAccessException("Error storing auth token: " + e.getMessage());
         }
     }
+
 
     public AuthData getAuth(String authToken) throws DataAccessException {
         String sql = "SELECT username FROM auth_tokens WHERE token = ?";

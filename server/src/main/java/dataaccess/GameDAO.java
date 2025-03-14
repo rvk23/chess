@@ -14,36 +14,41 @@ import java.util.*;
 public class GameDAO {
     private static final Gson gson = new Gson();
 
+
     public int createGame(String gameName) throws DataAccessException {
         String sql = "INSERT INTO games (whiteUsername, blackUsername, gameName, gameState) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            conn.setAutoCommit(false);
 
-            stmt.setString(1, null);
-            stmt.setString(2, null);
-            stmt.setString(3, gameName);
-            stmt.setString(4, gson.toJson(new ChessGame()));
+            try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setNull(1, Types.VARCHAR);
+                stmt.setNull(2, Types.VARCHAR);
+                stmt.setString(3, gameName);
+                stmt.setString(4, gson.toJson(new ChessGame()));
 
-            int rowsInserted = stmt.executeUpdate();
-            if (rowsInserted == 0) {
-                throw new DataAccessException("Game insert failed: No rows affected.");
-            }
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted == 0) {
+                    throw new DataAccessException("Game insert failed: No rows affected.");
+                }
 
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int gameID = generatedKeys.getInt(1);
-                    System.out.println("Game created with ID: " + gameID);
-                    return gameID;
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int gameID = generatedKeys.getInt(1);
+                        conn.commit();
+                        System.out.println("Game created with ID: " + gameID);
+                        return gameID;
+                    }
                 }
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new DataAccessException("Error inserting game: " + e.getMessage());
         }
 
         throw new DataAccessException("Game insert failed, no ID generated.");
     }
+
+
 
     public GameData getGame(int gameID) throws DataAccessException {
         String sql = "SELECT whiteUsername, blackUsername, gameName, gameState FROM games WHERE id = ?";
@@ -57,19 +62,29 @@ public class GameDAO {
                 if (!rs.next()) {
                     throw new DataAccessException("Game with ID " + gameID + " not found.");
                 }
+
+                ChessGame gameState;
+                try {
+                    gameState = gson.fromJson(rs.getString("gameState"), ChessGame.class);
+                } catch (JsonSyntaxException e) {
+                    throw new DataAccessException("Error parsing game state for game ID " + gameID);
+                }
+
                 return new GameData(
                         gameID,
                         rs.getString("whiteUsername"),
                         rs.getString("blackUsername"),
                         rs.getString("gameName"),
-                        gson.fromJson(rs.getString("gameState"), ChessGame.class)
+                        gameState
                 );
             }
         }
-        catch (SQLException | JsonSyntaxException e) {
+        catch (SQLException e) {
             throw new DataAccessException("Error retrieving game: " + e.getMessage());
         }
     }
+
+
 
     public List<GameData> getAllGames() throws DataAccessException {
         List<GameData> gameList = new ArrayList<>();
@@ -80,21 +95,29 @@ public class GameDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
+                //game state valid
+                ChessGame gameState;
+                try {
+                    gameState = gson.fromJson(rs.getString("gameState"), ChessGame.class);
+                } catch (JsonSyntaxException e) {
+                    throw new DataAccessException("Error parsing game state for game ID " + rs.getInt("id"));
+                }
+
                 gameList.add(new GameData(
                         rs.getInt("id"),
                         rs.getString("whiteUsername"),
                         rs.getString("blackUsername"),
                         rs.getString("gameName"),
-                        gson.fromJson(rs.getString("gameState"), ChessGame.class)
-
+                        gameState
                 ));
             }
-        } catch (SQLException | JsonSyntaxException e) {
+        } catch (SQLException e) {
             throw new DataAccessException("Error retrieving all games: " + e.getMessage());
         }
 
         return gameList;
     }
+
 
     public void updateGame(int gameID, GameData updatedGame) throws DataAccessException {
         String sql = "UPDATE games SET whiteUsername = ?, blackUsername = ?, gameName = ?, gameState = ? WHERE id = ?";
@@ -110,21 +133,22 @@ public class GameDAO {
 
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated == 0) {
-                throw new DataAccessException("Update failed: No rows updated.");
+                throw new DataAccessException("Update failed: No rows updated for game ID " + gameID);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new DataAccessException("Error updating game: " + e.getMessage());
         }
     }
 
     public void clear() throws DataAccessException {
         String sql = "DELETE FROM games";
+
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.executeUpdate();
-        }
-        catch (SQLException e) {
+            int rowsDeleted = stmt.executeUpdate();
+            // debug
+            System.out.println("Cleared " + rowsDeleted + " games from database.");
+        } catch (SQLException e) {
             throw new DataAccessException("Error clearing games: " + e.getMessage());
         }
     }
