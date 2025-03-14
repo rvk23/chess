@@ -27,7 +27,8 @@ public class DatabaseManager {
             PASSWORD = props.getProperty("db.password");
             var host = props.getProperty("db.host");
             var port = Integer.parseInt(props.getProperty("db.port"));
-            CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
+            CONNECTION_URL = String.format("jdbc:mysql://%s:%d/%s?serverTimezone=UTC", host, port, DATABASE_NAME);
+
         } catch (Exception ex) {
             throw new RuntimeException("Error loading db.properties: " + ex.getMessage());
         }
@@ -43,7 +44,7 @@ public class DatabaseManager {
 
             String createDB = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
             stmt.executeUpdate(createDB);
-            System.out.println("✅ Database ensured: " + DATABASE_NAME);
+            System.out.println("Database ensured: " + DATABASE_NAME);
 
         } catch (SQLException e) {
             throw new DataAccessException("Error creating database: " + e.getMessage());
@@ -93,6 +94,7 @@ public class DatabaseManager {
                     id INT NOT NULL AUTO_INCREMENT,
                     whiteUsername VARCHAR(256),
                     blackUsername VARCHAR(256),
+                    gameName VARCHAR(256) NOT NULL,
                     gameState TEXT NOT NULL,
                     PRIMARY KEY (id),
                     FOREIGN KEY (whiteUsername) REFERENCES users(username) ON DELETE SET NULL,
@@ -122,21 +124,17 @@ public class DatabaseManager {
 
 
 
-    private static boolean databaseCreated = false;
+
 
     static Connection getConnection() throws DataAccessException {
         try {
-            if (!databaseCreated) {
-                createDatabase();
-                databaseCreated = true;
-            }
-            Connection conn = DriverManager.getConnection(CONNECTION_URL + "/" + DATABASE_NAME, USER, PASSWORD);
-            conn.setAutoCommit(true);
-            return conn;
+            createDatabase();
+            return DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
         } catch (SQLException e) {
             throw new DataAccessException("Error connecting to database: " + e.getMessage());
         }
     }
+
 
 }
 
