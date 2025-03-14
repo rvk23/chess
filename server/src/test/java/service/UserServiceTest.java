@@ -6,6 +6,8 @@ import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
 import service.UserService;
+import java.util.UUID;
+
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,27 +18,42 @@ public class UserServiceTest {
     private UserService userService;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws DataAccessException {
         UserDAO userDAO = new UserDAO();
         AuthDAO authDAO = new AuthDAO();
+
+        userDAO.clear();
+        authDAO.clear();
+
         userService = new UserService(userDAO, authDAO);
     }
 
+
     @Test
     void registerSuccess() throws DataAccessException {
-        UserData user = new UserData("user", "password", "abc123@email.com");
+        String uniqueUsername = "user" + UUID.randomUUID();
+        UserData user = new UserData(uniqueUsername, "password", "abc123@email.com");
+
         AuthData auth = userService.register(user);
+
         assertNotNull(auth);
-        assertEquals("user", auth.username());
+        assertEquals(uniqueUsername, auth.username());
     }
+
 
     @Test
     void registerFailUserTaken() throws DataAccessException {
-        UserData user = new UserData("user", "password", "abc123@test.com");
-        userService.register(user);
+        String username = "user";
+
+        if (userService.getAuthDAO().getAuth(username) == null) {
+            userService.register(new UserData(username, "password", "abc123@test.com"));
+        }
+
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            userService.register(user);
+            userService.register(new UserData(username, "password", "abc123@test.com"));
         });
+
         assertEquals("Thats already taken", exception.getMessage());
     }
+
 }

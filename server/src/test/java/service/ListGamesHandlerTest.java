@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
+import dataaccess.UserDAO;
 import model.AuthData;
 import model.GameData;
+import model.UserData;
 import service.GameService;
 import handler.ListGamesHandler;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +41,12 @@ public class ListGamesHandlerTest {
         authDAO.clear();
 
         String authToken = "validToken";
+
+
+        UserDAO userDAO = new UserDAO();
+        userDAO.addUser(new UserData("user", "password", "user@email.com"));
+
+
         authDAO.createAuth(authToken, "user");
 
 
@@ -57,6 +65,7 @@ public class ListGamesHandlerTest {
         assertNotNull(games);
         assertEquals(2, games.size(), "The two created games should be listed");
     }
+
 
 
 

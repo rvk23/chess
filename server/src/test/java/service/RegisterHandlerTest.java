@@ -19,52 +19,66 @@ public class RegisterHandlerTest {
     private RegisterHandler handler;
     private UserService userService;
     private Gson gson;
+    private UserDAO userDAO;
 
     @BeforeEach
-    void setUp() {
-        UserDAO userDAO = new UserDAO();
+    void setUp() throws Exception {
+        userDAO = new UserDAO();
         AuthDAO authDAO = new AuthDAO();
         userService = new UserService(userDAO, authDAO);
         handler = new RegisterHandler(userService);
         gson = new Gson();
+
+        userDAO.clear();
+        authDAO.clear();
     }
+
 
     @Test
     void handleSuccess() throws Exception {
-        // json request
-        String jsonInput = gson.toJson(new UserData("testUser", "pass123", "email@test.com"));
 
-
+        String jsonInput = gson.toJson(new UserData("user", "password", "abc123@test.com"));
         RequestStub req = new RequestStub(jsonInput);
         ResponseStub res = new ResponseStub();
 
-        // call handler
+
         String jsonResponse = (String) handler.handle(req, res);
+
+
+        assertNotNull(jsonResponse, "Response should not be null");
+
+
         AuthData response = gson.fromJson(jsonResponse, AuthData.class);
 
-        // assertions
-        assertNotNull(response.authToken());
-        assertEquals("testUser", response.username());
+
+        assertNotNull(response, "AuthData should not be null");
+        assertNotNull(response.authToken(), "Auth token should not be null");
+        assertEquals("user", response.username());
         assertEquals(200, res.status());
     }
+
 
     @Test
     void handleAlreadyTaken() throws Exception {
 
-        userService.register(new UserData("testUser", "pass123", "email@test.com"));
+        if (userDAO.getUser("user") == null) {
+            userService.register(new UserData("user", "password", "abc123@test.com"));
+        }
 
 
-        String jsonInput = gson.toJson(new UserData("testUser", "pass123", "email@test.com"));
+        String jsonInput = gson.toJson(new UserData("user", "password", "abc123@test.com"));
         RequestStub req = new RequestStub(jsonInput);
         ResponseStub res = new ResponseStub();
 
-        // call handler
+
         String jsonResponse = (String) handler.handle(req, res);
 
-        // assertions
-        assertEquals(403, res.status());
-        assertTrue(jsonResponse.contains("Error: Username Already Taken"));
+
+        assertEquals(403, res.status(), "Should return 403 for duplicate user");
+        assertTrue(jsonResponse.contains("Error: Username Already Taken"), "Error message should match");
     }
+
+
 
 
     private static class RequestStub extends Request {

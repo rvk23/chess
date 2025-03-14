@@ -17,9 +17,13 @@ public class LogoutServiceTest {
     private UserDAO userDAO;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws DataAccessException {
         userDAO = new UserDAO();
         authDAO = new AuthDAO();
+
+        userDAO.clear();
+        authDAO.clear();
+
         userService = new UserService(userDAO, authDAO);
     }
 
