@@ -26,13 +26,13 @@ public class GameDAO {
 
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted == 0) {
-                throw new DataAccessException("⚠️ Game insert failed: No rows affected.");
+                throw new DataAccessException("Game insert failed: No rows affected.");
             }
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int gameID = generatedKeys.getInt(1);
-                    System.out.println("✅ Game created with ID: " + gameID);
+                    System.out.println("Game created with ID: " + gameID);
                     return gameID;
                 }
             }
@@ -40,7 +40,7 @@ public class GameDAO {
             throw new DataAccessException("Error inserting game: " + e.getMessage());
         }
 
-        throw new DataAccessException("⚠️ Game insert failed, no ID generated.");
+        throw new DataAccessException("Game insert failed, no ID generated.");
     }
 
     public GameData getGame(int gameID) throws DataAccessException {
@@ -104,7 +104,7 @@ public class GameDAO {
 
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated == 0) {
-                throw new DataAccessException("⚠️ Update failed: No rows updated.");
+                throw new DataAccessException("Update failed: No rows updated.");
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error updating game: " + e.getMessage());
