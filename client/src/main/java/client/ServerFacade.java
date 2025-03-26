@@ -6,6 +6,8 @@ import model.UserData;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import model.GameData;
+
 
 public class ServerFacade {
     private final String serverUrl;
@@ -62,5 +64,41 @@ public class ServerFacade {
             return gson.fromJson(in, AuthData.class);
         }
     }
+
+    public void logout(String authToken) throws Exception {
+        var conn = (HttpURLConnection) new URL(serverUrl + "/session").openConnection();
+        conn.setRequestMethod("DELETE");
+        conn.setRequestProperty("Authorization", authToken);
+
+        if (conn.getResponseCode() != 200) {
+            try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
+                throw new RuntimeException(reader.readLine());
+            }
+        }
+    }
+
+
+    // list off games
+    public GameData[] listGames(String authToken) throws Exception {
+        var conn = (HttpURLConnection) new URL(serverUrl + "/game").openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", authToken);
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        if (conn.getResponseCode() != 200) {
+            try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
+                throw new RuntimeException(reader.readLine());
+            }
+        }
+
+        try (var in = new InputStreamReader(conn.getInputStream())) {
+            return gson.fromJson(in, GameListWrapper.class).games;
+        }
+    }
+
+    private static class GameListWrapper {
+        GameData[] games;
+    }
+
 
 }

@@ -85,5 +85,31 @@ public class ServerFacadeTests {
     }
 
 
+    @Test
+    public void logoutPositive() throws Exception {
+        var facade = new ServerFacade(server.port());
+        var auth = facade.register("user", "password", "abc123@test.com");
+
+        assertDoesNotThrow(() -> facade.logout(auth.authToken()), "Logout should not throw an exception");
+
+        Exception ex = assertThrows(Exception.class, () -> {
+            facade.listGames(auth.authToken());
+        });
+        assertTrue(ex.getMessage().toLowerCase().contains("unauthorized"), "Expected unauthorized after logout");
+    }
+
+    @Test
+    public void logoutNegative() {
+        var facade = new ServerFacade(server.port());
+
+        Exception ex = assertThrows(Exception.class, () ->
+                facade.logout("invalid-token123")
+        );
+
+        assertTrue(ex.getMessage().toLowerCase().contains("unauthorized") || ex.getMessage().contains("401"),
+                "Expected error due to invalid auth token");
+    }
+
+
 
 }
