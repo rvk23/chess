@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 
 public class Server {
 
+    private int assignedPort;
+
     public int run(int desiredPort) {
 
         DatabaseManager.initializeDatabase();
@@ -50,13 +52,20 @@ public class Server {
 
 
         Spark.awaitInitialization();
-        return Spark.port();
+        assignedPort = Spark.port();
+        return assignedPort;
     }
 
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
     }
+
+    public int port() {
+        return assignedPort;
+    }
+
+
 
     static class ErrorResponse {
         String message;
