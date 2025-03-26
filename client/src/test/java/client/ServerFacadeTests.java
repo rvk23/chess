@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.InputStream;
-
+import model.GameData;
 
 public class ServerFacadeTests {
 
@@ -108,6 +108,41 @@ public class ServerFacadeTests {
 
         assertTrue(ex.getMessage().toLowerCase().contains("unauthorized") || ex.getMessage().contains("401"),
                 "Expected error due to invalid auth token");
+    }
+
+
+
+    @Test
+    public void createGamePositive() throws Exception {
+        var facade = new ServerFacade(server.port());
+        var auth = facade.register("user", "password", "abc123@test.com");
+
+        assertDoesNotThrow(() -> {
+            facade.createGame(auth.authToken(), "My Game");
+        }, "Game creation shouldn't throw if with valid auth token");
+
+
+        GameData[] games = facade.listGames(auth.authToken());
+        boolean found = false;
+        for (var g : games) {
+            if (g.gameName().equals("My Game")) {
+                found = true;
+                break;
+            }
+        }
+        assertTrue(found, "Created game should appear in the game list");
+    }
+
+    @Test
+    public void createGameNegative() {
+        var facade = new ServerFacade(server.port());
+
+        Exception ex = assertThrows(Exception.class, () -> {
+            facade.createGame("invalid-token123", "Not Game");
+        });
+
+        assertTrue(ex.getMessage().toLowerCase().contains("unauthorized") || ex.getMessage().contains("401"),
+                "Expected unauthorized error due to bad auth token");
     }
 
 

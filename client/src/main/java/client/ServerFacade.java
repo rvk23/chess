@@ -100,5 +100,35 @@ public class ServerFacade {
         GameData[] games;
     }
 
+    public void createGame(String authToken, String gameName) throws Exception {
+        var conn = (HttpURLConnection) new URL(serverUrl + "/game").openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Authorization", authToken);
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        // request
+        var body = gson.toJson(new GameNameWrapper(gameName));
+        try (var out = conn.getOutputStream()) {
+            out.write(body.getBytes());
+        }
+
+        if (conn.getResponseCode() != 200) {
+            try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
+                throw new RuntimeException(reader.readLine());
+            }
+        }
+    }
+
+    // add in
+    private static class GameNameWrapper {
+        String gameName;
+        GameNameWrapper(String name) {
+            this.gameName = name;
+        }
+    }
+
+
+
 
 }
