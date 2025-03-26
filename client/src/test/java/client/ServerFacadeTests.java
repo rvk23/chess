@@ -60,4 +60,30 @@ public class ServerFacadeTests {
     }
 
 
+    @Test
+    public void loginPositive() throws Exception {
+        var facade = new ServerFacade(server.port());
+        facade.register("user", "password", "abc123@test.com");
+
+        AuthData auth = facade.login("user", "password");
+
+        assertNotNull(auth.authToken(), "Auth token should not be null on login");
+        assertEquals("user", auth.username(), "Returned username should match login");
+    }
+
+    @Test
+    public void loginNegative() throws Exception {
+        var facade = new ServerFacade(server.port());
+        facade.register("userwrong", "wrongpassword", "abc123@test.com");
+
+        Exception exception = assertThrows(Exception.class, () ->
+                facade.login("userwrong", "notpassword")
+        );
+
+        String msg = exception.getMessage().toLowerCase();
+        assertTrue(msg.contains("unauthorized") || msg.contains("401"), "Expected unauthorized error");
+    }
+
+
+
 }
