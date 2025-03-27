@@ -178,6 +178,36 @@ public class ServerFacadeTests {
         assertTrue(msg.contains("invalid team color") || msg.contains("400"), "Expected invalid color error");
     }
 
+    @Test
+    public void observeGamePositive() throws Exception {
+        var facade = new ServerFacade(server.port());
+        var auth = facade.register("user", "password", "abc123@test.com");
+
+        facade.createGame(auth.authToken(), "Observer");
+        GameData[] games = facade.listGames(auth.authToken());
+        int gameID = games[0].gameID();
+
+        assertDoesNotThrow(() -> {
+            facade.observeGame(auth.authToken(), gameID);
+        }, "Observing game should not throw with valid gameID and token");
+    }
+
+    @Test
+    public void observeGameNegative() throws Exception {
+        var facade = new ServerFacade(server.port());
+        var auth = facade.register("user", "password", "abc123@test.com");
+
+        facade.createGame(auth.authToken(), "None");
+        GameData[] games = facade.listGames(auth.authToken());
+        int gameID = games[0].gameID();
+
+        Exception ex = assertThrows(Exception.class, () -> {
+            facade.observeGame("invalid-token123", gameID);
+        });
+
+        String msg = ex.getMessage().toLowerCase();
+        assertTrue(msg.contains("unauthorized") || msg.contains("401"), "Expected unauthorized error");
+    }
 
 
 

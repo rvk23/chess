@@ -29,10 +29,11 @@ public class JoinGameHandler implements Route {
         String playerColor = (String) requestMap.get("playerColor");
         Double gameIDDouble = (Double) requestMap.get("gameID");
 
-        if (playerColor == null || gameIDDouble == null) {
+        if (gameIDDouble == null) {
             res.status(400);
             return gson.toJson(Map.of("message", "Error: Bad Request"));
         }
+
 
         int gameID = gameIDDouble.intValue();
         try {

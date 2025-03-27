@@ -65,9 +65,13 @@ public class GameService {
             }
             game = new GameData(gameID, game.whiteUsername(), auth.username(), game.gameName(), game.game());
         }
+        else if (playerColor == null) {
+            return;
+        }
         else {
             throw new IllegalArgumentException("Error: Invalid team color");
         }
+
 
         gameDAO.updateGame(gameID, game);
     }

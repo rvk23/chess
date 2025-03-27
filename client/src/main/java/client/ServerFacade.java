@@ -159,6 +159,24 @@ public class ServerFacade {
     }
 
 
+    public void observeGame(String authToken, int gameID) throws Exception {
+        var conn = (HttpURLConnection) new URL(serverUrl + "/game").openConnection();
+        conn.setRequestMethod("PUT");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Authorization", authToken);
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        var body = gson.toJson(new JoinGameRequest(null, gameID));
+        try (var out = conn.getOutputStream()) {
+            out.write(body.getBytes());
+        }
+
+        if (conn.getResponseCode() != 200) {
+            try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
+                throw new RuntimeException(reader.readLine());
+            }
+        }
+    }
 
 
 
