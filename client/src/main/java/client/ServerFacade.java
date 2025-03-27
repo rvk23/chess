@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import model.GameData;
+import chess.*;
 
 
 public class ServerFacade {
@@ -16,6 +17,30 @@ public class ServerFacade {
     public ServerFacade(int port) {
         this.serverUrl = "http://localhost:" + port;
     }
+
+
+    public ChessGame getGameState(String authToken, int gameID) throws Exception {
+        var url = serverUrl + "/game/state?gameID=" + gameID;
+        var conn = (HttpURLConnection) new URL(url).openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", authToken);
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        if (conn.getResponseCode() != 200) {
+            try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
+                throw new RuntimeException(reader.readLine());
+            }
+        }
+
+        try (var in = new InputStreamReader(conn.getInputStream())) {
+            return gson.fromJson(in, ChessGame.class);
+        }
+    }
+
+
+
+
+
 
     // register user pass email
     public AuthData register(String username, String password, String email) throws Exception {

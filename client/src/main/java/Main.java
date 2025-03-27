@@ -3,7 +3,7 @@ import java.util.Scanner;
 import client.ServerFacade;
 import model.AuthData;
 import ui.PreloginUI;
-
+import ui.PostloginUI;
 
 
 public class Main {
@@ -17,5 +17,10 @@ public class Main {
 
         PreloginUI prelogin = new PreloginUI(facade, scanner);
         AuthData auth = prelogin.run();
+
+        PostloginUI postlogin = new PostloginUI(facade, auth, scanner);
+        postlogin.run();
+
+
     }
 }

@@ -38,6 +38,8 @@ public class Server {
         Spark.get("/game", new ListGamesHandler(gameService)); // List all games
         Spark.post("/game", new CreateGameHandler(gameService)); // Create game
         Spark.put("/game", new JoinGameHandler(gameService)); // Join game
+        Spark.get("/game/state", new GameStateHandler(gameService)); // return game state
+
 
         Spark.delete("/db", (req, res) -> {
             DatabaseManager.clearDatabase();

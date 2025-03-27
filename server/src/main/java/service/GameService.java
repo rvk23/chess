@@ -17,6 +17,14 @@ public class GameService {
         this.authDAO = authDAO;
     }
 
+    public GameData getGame(String authToken, int gameID) throws DataAccessException {
+        if (!isAuthenticated(authToken)) {
+            throw new IllegalArgumentException("Error: Unauthorized");
+        }
+        return gameDAO.getGame(gameID);
+    }
+
+
     public boolean isAuthenticated(String authToken) throws DataAccessException {
         return authDAO.getAuth(authToken) != null;
     }
@@ -71,6 +79,8 @@ public class GameService {
         else {
             throw new IllegalArgumentException("Error: Invalid team color");
         }
+
+
 
 
         gameDAO.updateGame(gameID, game);
