@@ -146,5 +146,39 @@ public class ServerFacadeTests {
     }
 
 
+    @Test
+    public void joinGamePositive() throws Exception {
+        var facade = new ServerFacade(server.port());
+        var auth = facade.register("user", "password", "abc123@test.com");
+
+        facade.createGame(auth.authToken(), "Test Game");
+        GameData[] games = facade.listGames(auth.authToken());
+
+        int gameID = games[0].gameID();
+
+        assertDoesNotThrow(() -> {
+            facade.joinGame(auth.authToken(), gameID, "WHITE");
+        }, "Joining game as WHITE shouldn't throw an exception");
+    }
+
+    @Test
+    public void joinGameNegative() throws Exception {
+        var facade = new ServerFacade(server.port());
+        var auth = facade.register("user", "password", "abc123@test.com");
+
+        facade.createGame(auth.authToken(), "Failed Game");
+        GameData[] games = facade.listGames(auth.authToken());
+        int gameID = games[0].gameID();
+
+        Exception ex = assertThrows(Exception.class, () -> {
+            facade.joinGame(auth.authToken(), gameID, "GREEN");
+        });
+
+        String msg = ex.getMessage().toLowerCase();
+        assertTrue(msg.contains("invalid team color") || msg.contains("400"), "Expected invalid color error");
+    }
+
+
+
 
 }
