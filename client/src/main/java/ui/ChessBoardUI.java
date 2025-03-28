@@ -12,17 +12,17 @@ public class ChessBoardUI {
         ChessGame game = facade.getGameState(authToken, gameID);
         ChessBoard board = game.getBoard();
 
-        boolean whitePerspective = perspective.equalsIgnoreCase("WHITE");
+        boolean blackPerspective = perspective.equalsIgnoreCase("BLACK");
 
         System.out.println(EscapeSequences.ERASE_SCREEN);
-        printColumnHeaders(whitePerspective);
+        printColumnHeaders(blackPerspective);
 
         for (int row = 1; row <= 8; row++) {
-            int displayRow = whitePerspective ? 9 - row : row + 1;
-            System.out.print(" " + displayRow + " "); // row label
+            int displayRow = blackPerspective ? 9 - row : row;
+            System.out.print(" " + row + " "); // row label
 
             for (int col = 1; col <= 8; col++) {
-                int displayCol = whitePerspective ? col : 9 - col;
+                int displayCol = blackPerspective ? col : 9 - col;
                 ChessPosition pos = new ChessPosition(displayRow, displayCol);
                 ChessPiece piece = board.getPiece(pos);
 
@@ -44,7 +44,7 @@ public class ChessBoardUI {
             System.out.println(" " + displayRow); // right row label
         }
 
-        printColumnHeaders(whitePerspective);
+        printColumnHeaders(blackPerspective);
     }
 
     private static void printColumnHeaders(boolean whitePerspective) {
