@@ -9,7 +9,6 @@ import java.net.URL;
 import model.GameData;
 import chess.*;
 
-
 public class ServerFacade {
     private final String serverUrl;
     private final Gson gson = new Gson();

@@ -5,6 +5,7 @@ import model.AuthData;
 import model.GameData;
 
 import java.util.*;
+// wifi push
 
 public class PostloginUI {
 
