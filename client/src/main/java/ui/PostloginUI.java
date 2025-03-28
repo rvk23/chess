@@ -71,18 +71,58 @@ public class PostloginUI {
                 }
                 case "play" -> {
                     try {
-                        System.out.print("Enter game number to join: ");
+                        System.out.print("Enter game number to play: ");
                         int number = Integer.parseInt(scanner.nextLine().trim());
                         int gameID = gameNumberToID.getOrDefault(number, -1);
                         if (gameID == -1) { throw new Exception("Invalid game number");}
 
-                        System.out.print("Play as WHITE or BLACK: ");
+
+                        GameData[] games = facade.listGames(auth.authToken());
+                        GameData selectedGame = null;
+                        for (GameData game: games) {
+                            if (game.gameID() == gameID) {
+                                selectedGame = game;
+                                break;
+                            }
+                        }
+
+
+                        if (selectedGame == null) {
+                            throw new Exception("Game not found");
+                        }
+
+                        String user = auth.username();
+                        String color;
+
+                        if (user.equals(selectedGame.whiteUsername())) {
+                            color = "WHITE";
+                            System.out.println("You are already WHITE in this game it will rejoin you.");
+                        } else if (user.equals(selectedGame.blackUsername())) {
+                            color = "BLACK";
+                            System.out.println("You are already BLACK in this game it will rejoin you.");
+                        } else {
+                            System.out.print("Play as WHITE or BLACK: ");
+                            color = scanner.nextLine().trim().toUpperCase();
+                            facade.joinGame(auth.authToken(), gameID, color);
+                            System.out.println("Joined game " + gameID + " as " + color);
+                        }
+
+                        System.out.println("Drawing your board");
+                        ChessBoardUI.drawBoard(auth.authToken(), facade, gameID, color);
+
+
+
+                        /*System.out.print("Play as WHITE or BLACK: ");
                         String color = scanner.nextLine().trim().toUpperCase();
 
                         facade.joinGame(auth.authToken(), gameID, color);
                         System.out.println("Joined game " + gameID + " as " + color);
                         System.out.println("Drawing initial board...");
                         ChessBoardUI.drawBoard(auth.authToken(), facade, gameID, color);
+                        */
+
+
+
                     } catch (Exception e) {
                         System.out.println("Error: " + e.getMessage());
                     }
