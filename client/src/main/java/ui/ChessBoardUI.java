@@ -18,17 +18,18 @@ public class ChessBoardUI {
         printColumnHeaders(blackPerspective);
 
         for (int row = 1; row <= 8; row++) {
-            int displayRow = blackPerspective ? 9 - row : row;
-            System.out.print(" " + row + " "); // row label
+            int displayRow = blackPerspective ? row : 9 - row;
+            int labelRow = blackPerspective ? row : 9 - row; // change label
+            System.out.print(" " + labelRow + " "); // left row label
 
             for (int col = 1; col <= 8; col++) {
-                int displayCol = blackPerspective ? col : 9 - col;
+                int displayCol = blackPerspective ? 9 - col : col;
                 ChessPosition pos = new ChessPosition(displayRow, displayCol);
                 ChessPiece piece = board.getPiece(pos);
 
                 boolean isLightSquare = (displayRow + displayCol) % 2 == 0;
-                String bgColor = isLightSquare ? EscapeSequences.SET_BG_COLOR_LIGHT_GREY
-                        : EscapeSequences.SET_BG_COLOR_DARK_GREY;
+                String bgColor = isLightSquare ? EscapeSequences.SET_BG_COLOR_DARK_GREY
+                        : EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
 
                 System.out.print(bgColor);
 
@@ -41,15 +42,15 @@ public class ChessBoardUI {
                 System.out.print(EscapeSequences.RESET_BG_COLOR);
             }
 
-            System.out.println(" " + displayRow); // right row label
+            System.out.println(" " + labelRow); // right row label
         }
 
         printColumnHeaders(blackPerspective);
     }
 
-    private static void printColumnHeaders(boolean whitePerspective) {
-        String letters = "abcdefgh";
-        if (!whitePerspective) {
+    private static void printColumnHeaders(boolean blackPerspective) {
+        String letters = "hgfedcba";
+        if (!blackPerspective) {
             letters = new StringBuilder(letters).reverse().toString();
         }
 
@@ -80,7 +81,7 @@ public class ChessBoardUI {
         );
 
         return piece.getTeamColor() == ChessGame.TeamColor.WHITE
-                ? whitePieces.get(piece.getPieceType())
-                : blackPieces.get(piece.getPieceType());
+                ? blackPieces.get(piece.getPieceType())
+                : whitePieces.get(piece.getPieceType());
     }
 }
