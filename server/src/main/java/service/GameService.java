@@ -72,8 +72,10 @@ public class GameService {
                 throw new IllegalArgumentException("Error: Black slot already taken");
             }
             game = new GameData(gameID, game.whiteUsername(), auth.username(), game.gameName(), game.game());
-        }
-        else if (playerColor == null) {
+        } else if ("OBSERVER".equalsIgnoreCase(playerColor)) {
+            System.out.println(auth.username() + " observing game " + gameID);
+            // attempt to add observer
+        } else if (playerColor == null) {
             return;
         }
         else {

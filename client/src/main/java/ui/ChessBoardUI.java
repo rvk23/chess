@@ -54,7 +54,7 @@ public class ChessBoardUI {
             letters = new StringBuilder(letters).reverse().toString();
         }
 
-        System.out.print("    ");
+        System.out.print("   ");
         for (char c : letters.toCharArray()) {
             System.out.print(" " + c + "  ");
         }

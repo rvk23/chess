@@ -37,7 +37,7 @@ public class PostloginUI {
                         System.out.println("Logged out!");
                         return;
                     } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
                 case "create" -> {
@@ -47,7 +47,7 @@ public class PostloginUI {
                         facade.createGame(auth.authToken(), gameName);
                         System.out.println("Game created: " + gameName);
                     } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
                 case "list" -> {
@@ -67,7 +67,7 @@ public class PostloginUI {
                             System.out.println("  (no games available)");
                         }
                     } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
                 case "play" -> {
@@ -125,21 +125,33 @@ public class PostloginUI {
 
 
                     } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
                 case "observe" -> {
                     try {
                         System.out.print("Enter game number to observe: ");
-                        int number = Integer.parseInt(scanner.nextLine().trim());
-                        int gameID = gameNumberToID.getOrDefault(number, -1);
-                        if (gameID == -1) {throw new Exception("Invalid game number");}
+                        String line = scanner.nextLine().trim();
 
+                        int number;
+                        try {
+                            number = Integer.parseInt(line);
+                        }
+                        catch (NumberFormatException e) {
+                            System.out.println("Please enter a valid number for input no letters.");
+                            break;
+                        }
+
+                        int gameID = gameNumberToID.getOrDefault(number, -1);
+                        if (gameID == -1) {
+                            System.out.println("Invalid game number.");
+                            break;
+                        }
                         facade.observeGame(auth.authToken(), gameID);
-                        System.out.println("Observing game " + gameID + "...");
+                        System.out.println("Observing game " + gameID);
                         ChessBoardUI.drawBoard(auth.authToken(), facade, gameID, "WHITE");
                     } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
                 default -> System.out.println("Unknown command. Type 'help' to see options.");

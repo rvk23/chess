@@ -40,7 +40,7 @@ public class PreloginUI {
                         System.out.println("Registered as " + username);
                         return auth;
                     } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
                 case "login" -> {
@@ -53,7 +53,7 @@ public class PreloginUI {
                         System.out.println("Logged in as " + username);
                         return auth;
                     } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
                 default -> System.out.println("Not an option. Type 'help' to see options.");

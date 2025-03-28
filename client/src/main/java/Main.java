@@ -14,12 +14,13 @@ public class Main {
         ServerFacade facade = new ServerFacade(port);
         Scanner scanner = new Scanner(System.in);
 
-        PreloginUI prelogin = new PreloginUI(facade, scanner);
-        AuthData auth = prelogin.run();
+        while (true) {
+            PreloginUI prelogin = new PreloginUI(facade, scanner);
+            AuthData auth = prelogin.run();
 
-        PostloginUI postlogin = new PostloginUI(facade, auth, scanner);
-        postlogin.run();
-
+            PostloginUI postlogin = new PostloginUI(facade, auth, scanner);
+            postlogin.run();
+        }
 
     }
 }

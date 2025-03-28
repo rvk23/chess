@@ -8,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import model.GameData;
 import chess.*;
+import java.util.Map;
+
 
 public class ServerFacade {
     private final String serverUrl;
@@ -56,7 +58,10 @@ public class ServerFacade {
 
         if (conn.getResponseCode() != 200) {
             try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-                throw new RuntimeException(reader.readLine());
+                String errorJson = reader.readLine();
+                Map<String, String> errorMap = gson.fromJson(errorJson, Map.class);
+                String message = errorMap.getOrDefault("message", "Unknown error");
+                throw new RuntimeException(message);
             }
         }
 
@@ -80,7 +85,10 @@ public class ServerFacade {
 
         if (conn.getResponseCode() != 200) {
             try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-                throw new RuntimeException(reader.readLine());
+                String errorJson = reader.readLine();
+                Map<String, String> errorMap = gson.fromJson(errorJson, Map.class);
+                String message = errorMap.getOrDefault("message", "Unknown error");
+                throw new RuntimeException(message);
             }
         }
 
@@ -96,7 +104,10 @@ public class ServerFacade {
 
         if (conn.getResponseCode() != 200) {
             try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-                throw new RuntimeException(reader.readLine());
+                String errorJson = reader.readLine();
+                Map<String, String> errorMap = gson.fromJson(errorJson, Map.class);
+                String message = errorMap.getOrDefault("message", "Unknown error");
+                throw new RuntimeException(message);
             }
         }
     }
@@ -111,7 +122,10 @@ public class ServerFacade {
 
         if (conn.getResponseCode() != 200) {
             try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-                throw new RuntimeException(reader.readLine());
+                String errorJson = reader.readLine();
+                Map<String, String> errorMap = gson.fromJson(errorJson, Map.class);
+                String message = errorMap.getOrDefault("message", "Unknown error");
+                throw new RuntimeException(message);
             }
         }
 
@@ -139,7 +153,10 @@ public class ServerFacade {
 
         if (conn.getResponseCode() != 200) {
             try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-                throw new RuntimeException(reader.readLine());
+                String errorJson = reader.readLine();
+                Map<String, String> errorMap = gson.fromJson(errorJson, Map.class);
+                String message = errorMap.getOrDefault("message", "Unknown error");
+                throw new RuntimeException(message);
             }
         }
     }
@@ -167,7 +184,10 @@ public class ServerFacade {
 
         if (conn.getResponseCode() != 200) {
             try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-                throw new RuntimeException(reader.readLine());
+                String errorJson = reader.readLine();
+                Map<String, String> errorMap = gson.fromJson(errorJson, Map.class);
+                String message = errorMap.getOrDefault("message", "Unknown error");
+                throw new RuntimeException(message);
             }
         }
     }
@@ -183,6 +203,9 @@ public class ServerFacade {
     }
 
 
+
+
+
     public void observeGame(String authToken, int gameID) throws Exception {
         var conn = (HttpURLConnection) new URL(serverUrl + "/game").openConnection();
         conn.setRequestMethod("PUT");
@@ -190,14 +213,17 @@ public class ServerFacade {
         conn.setRequestProperty("Authorization", authToken);
         conn.setRequestProperty("Content-Type", "application/json");
 
-        var body = gson.toJson(new JoinGameRequest(null, gameID));
+        var body = gson.toJson(new JoinGameRequest("OBSERVER" , gameID));
         try (var out = conn.getOutputStream()) {
             out.write(body.getBytes());
         }
 
         if (conn.getResponseCode() != 200) {
             try (var reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-                throw new RuntimeException(reader.readLine());
+                String errorJson = reader.readLine();
+                Map<String, String> errorMap = gson.fromJson(errorJson, Map.class);
+                String message = errorMap.getOrDefault("message", "Unknown error");
+                throw new RuntimeException(message);
             }
         }
     }
