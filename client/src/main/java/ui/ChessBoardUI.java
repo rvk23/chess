@@ -18,7 +18,7 @@ public class ChessBoardUI {
         printColumnHeaders(whitePerspective);
 
         for (int row = 1; row <= 8; row++) {
-            int displayRow = whitePerspective ? 8 - row : row + 1;
+            int displayRow = whitePerspective ? 9 - row : row + 1;
             System.out.print(" " + displayRow + " "); // row label
 
             for (int col = 1; col <= 8; col++) {
