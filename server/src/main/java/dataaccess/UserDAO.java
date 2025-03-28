@@ -59,29 +59,6 @@ public class UserDAO {
 
 
 
-    /**
-    public boolean verifyUser(String username, String providedPassword) throws DataAccessException {
-        String sql = "SELECT password_hash FROM users WHERE username = ?";
-
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    String storedHashedPassword = rs.getString("password_hash");
-
-                    System.out.println("Stored Hash for " + username + ": " + storedHashedPassword);
-
-                    return BCrypt.checkpw(providedPassword, storedHashedPassword);
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Error verifying user: " + e.getMessage());
-        }
-        return false;
-    }
-    */
 
 
 
