@@ -69,7 +69,7 @@ public class PostloginUI {
                         System.out.println("Error: " + e.getMessage());
                     }
                 }
-                case "join" -> {
+                case "play" -> {
                     try {
                         System.out.print("Enter game number to join: ");
                         int number = Integer.parseInt(scanner.nextLine().trim());
@@ -113,7 +113,7 @@ public class PostloginUI {
               logout     Log out of your account
               create     Create a new chess game
               list       List all available games
-              join       Join a game as a player
+              play       Join a game as a player
               observe    Observe a game as a spectator
         """);
     }
