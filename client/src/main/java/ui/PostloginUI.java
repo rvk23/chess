@@ -74,7 +74,7 @@ public class PostloginUI {
                         System.out.print("Enter game number to join: ");
                         int number = Integer.parseInt(scanner.nextLine().trim());
                         int gameID = gameNumberToID.getOrDefault(number, -1);
-                        if (gameID == -1) throw new Exception("Invalid game number");
+                        if (gameID == -1) { throw new Exception("Invalid game number");}
 
                         System.out.print("Play as WHITE or BLACK: ");
                         String color = scanner.nextLine().trim().toUpperCase();
@@ -92,7 +92,7 @@ public class PostloginUI {
                         System.out.print("Enter game number to observe: ");
                         int number = Integer.parseInt(scanner.nextLine().trim());
                         int gameID = gameNumberToID.getOrDefault(number, -1);
-                        if (gameID == -1) throw new Exception("Invalid game number");
+                        if (gameID == -1) {throw new Exception("Invalid game number");}
 
                         facade.observeGame(auth.authToken(), gameID);
                         System.out.println("Observing game " + gameID + "...");
