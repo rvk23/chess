@@ -35,7 +35,8 @@ public class WebSocketHandler {
                 case LEAVE -> handleLeave(command, session);
                 case RESIGN -> handleResign(command, session);
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             ex.printStackTrace();
             sendError(session, "Invalid WebSocket message: " + ex.getMessage());
         }
@@ -60,7 +61,22 @@ public class WebSocketHandler {
 
 
     private void handleConnect(UserGameCommand command, Session session) {
-        // stuff
+        try {
+            // load to user
+            ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+            session.getBasicRemote().sendText(gson.toJson(loadGame));
+
+            // notification
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            for (Session s : sessions) {
+                if (!s.equals(session)) {
+                    s.getBasicRemote().sendText(gson.toJson(notification));
+                }
+            }
+        } catch (IOException ex) {
+            sendError(session, "Error handling connect: " + ex.getMessage());
+        }
+
     }
 
     private void handleMakeMove(UserGameCommand command, Session session) {
