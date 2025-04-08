@@ -103,7 +103,33 @@ public class WebSocketHandler {
     }
 
     private void handleMakeMove(UserGameCommand command, Session session) {
-        // stuff
+        try {
+            Integer gameID = command.getGameID();
+            Set<Session> gamePlayers = gameSessions.get(gameID);
+
+            if (gamePlayers == null) {
+                sendError(session, "Error: Not part of a valid game");
+                return;
+            }
+
+            // stuff
+
+
+            ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+            for (Session s : gamePlayers) {
+                s.getBasicRemote().sendText(gson.toJson(loadGame));
+            }
+
+
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            for (Session s : gamePlayers) {
+                if (!s.equals(session)) {
+                    s.getBasicRemote().sendText(gson.toJson(notification));
+                }
+            }
+        } catch (IOException ex) {
+            sendError(session, "Error handling move: " + ex.getMessage());
+        }
     }
 
     private void handleLeave(UserGameCommand command, Session session) {
