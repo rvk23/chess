@@ -16,6 +16,10 @@ public class WebSocketHandler {
     private static final Set<Session> sessions = ConcurrentHashMap.newKeySet();
     private static final Gson gson = new Gson();
 
+    private static final ConcurrentHashMap<Session, String> sessionAuthTokens = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Set<Session>> gameSessions = new ConcurrentHashMap<>();
+
+
     @OnOpen
     public void onOpen(Session session) {
         sessions.add(session);
@@ -55,6 +59,10 @@ public class WebSocketHandler {
     @OnClose
     public void onClose(Session session) {
         sessions.remove(session);
+        sessionAuthTokens.remove(session);
+        for (Set<Session> gameSet : gameSessions.values()) {
+            gameSet.remove(session);
+        }
         System.out.println("Closed connection: " + session.getId());
     }
 
@@ -62,6 +70,20 @@ public class WebSocketHandler {
 
     private void handleConnect(UserGameCommand command, Session session) {
         try {
+            if (!isValidAuthToken(command.getAuthToken())) {
+                sendError(session, "Error: Invalid auth token");
+                return;
+            }
+
+            if (!isValidGameID(command.getGameID())) {
+                sendError(session, "Error: Invalid game ID");
+                return;
+            }
+
+            sessionAuthTokens.put(session, command.getAuthToken());
+            gameSessions.putIfAbsent(command.getGameID(), ConcurrentHashMap.newKeySet());
+            gameSessions.get(command.getGameID()).add(session);
+
             // load to user
             ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             session.getBasicRemote().sendText(gson.toJson(loadGame));
@@ -73,7 +95,8 @@ public class WebSocketHandler {
                     s.getBasicRemote().sendText(gson.toJson(notification));
                 }
             }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             sendError(session, "Error handling connect: " + ex.getMessage());
         }
 
@@ -89,6 +112,16 @@ public class WebSocketHandler {
 
     private void handleResign(UserGameCommand command, Session session) {
         // stuff
+    }
+
+    private boolean isValidAuthToken(String authToken) {
+        // more stuff
+        return authToken != null && !authToken.isEmpty();
+    }
+
+    private boolean isValidGameID(Integer gameID) {
+        // more stuff
+        return gameID != null && gameID > 0;
     }
 
 }
