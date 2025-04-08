@@ -133,7 +133,30 @@ public class WebSocketHandler {
     }
 
     private void handleLeave(UserGameCommand command, Session session) {
-        // stuff
+        try {
+            Integer gameID = command.getGameID();
+            Set<Session> gamePlayers = gameSessions.get(gameID);
+
+            if (gamePlayers != null) {
+                gamePlayers.remove(session);
+            }
+
+            sessions.remove(session);
+            sessionAuthTokens.remove(session);
+
+
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            if (gamePlayers != null) {
+                for (Session s : gamePlayers) {
+                    s.getBasicRemote().sendText(gson.toJson(notification));
+                }
+            }
+
+            session.close();
+        }
+        catch (Exception ex) {
+            sendError(session, "Error handling leave: " + ex.getMessage());
+        }
     }
 
     private void handleResign(UserGameCommand command, Session session) {
