@@ -48,9 +48,10 @@ public class WebSocketHandler {
 
     private void sendError(Session session, String errorMessage) {
         try {
-            ServerMessage errorMessageObj = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            session.getBasicRemote().sendText(gson.toJson(errorMessageObj));
-        } catch (IOException ex) {
+            ServerMessage error = new ServerMessage(ServerMessage.ServerMessageType.ERROR, errorMessage);
+            session.getBasicRemote().sendText(gson.toJson(error));
+        }
+        catch (IOException ex) {
             ex.printStackTrace();
         }
     }
@@ -88,9 +89,13 @@ public class WebSocketHandler {
             ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             session.getBasicRemote().sendText(gson.toJson(loadGame));
 
+
+            String username = getUsernameFromAuthToken(sessionAuthTokens.get(session));
             // notification
-            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            for (Session s : sessions) {
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username + " joined the game.");
+
+            Set<Session> gamePlayers = gameSessions.get(command.getGameID());
+            for (Session s : gamePlayers) {
                 if (!s.equals(session)) {
                     s.getBasicRemote().sendText(gson.toJson(notification));
                 }
@@ -100,6 +105,11 @@ public class WebSocketHandler {
             sendError(session, "Error handling connect: " + ex.getMessage());
         }
 
+    }
+
+
+    private String getUsernameFromAuthToken(String authToken) {
+        return authToken;
     }
 
     private void handleMakeMove(UserGameCommand command, Session session) {
@@ -120,14 +130,16 @@ public class WebSocketHandler {
                 s.getBasicRemote().sendText(gson.toJson(loadGame));
             }
 
+            String username = getUsernameFromAuthToken(sessionAuthTokens.get(session));
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username + " made a move.");
 
-            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             for (Session s : gamePlayers) {
                 if (!s.equals(session)) {
                     s.getBasicRemote().sendText(gson.toJson(notification));
                 }
             }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             sendError(session, "Error handling move: " + ex.getMessage());
         }
     }
@@ -144,8 +156,8 @@ public class WebSocketHandler {
             sessions.remove(session);
             sessionAuthTokens.remove(session);
 
-
-            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            String username = getUsernameFromAuthToken(sessionAuthTokens.get(session));
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username + " left the game.");
             if (gamePlayers != null) {
                 for (Session s : gamePlayers) {
                     s.getBasicRemote().sendText(gson.toJson(notification));
@@ -169,7 +181,8 @@ public class WebSocketHandler {
                 return;
             }
 
-            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            String username = getUsernameFromAuthToken(sessionAuthTokens.get(session));
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username + " resigned.");
             for (Session s : gamePlayers) {
                 s.getBasicRemote().sendText(gson.toJson(notification));
             }
