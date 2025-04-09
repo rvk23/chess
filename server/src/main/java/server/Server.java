@@ -5,6 +5,9 @@ import handler.*;
 import service.*;
 import dataaccess.*;
 import com.google.gson.Gson;
+import handler.WebSocketHandler;
+
+
 // check server
 
 public class Server {
@@ -17,9 +20,11 @@ public class Server {
 
         Spark.port(desiredPort);
 
+        Spark.webSocket("/ws", WebSocketHandler.class);
+
         Spark.staticFiles.location("web");
 
-        // Register your endpoints and handle exceptions here.
+
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         // DAOs
