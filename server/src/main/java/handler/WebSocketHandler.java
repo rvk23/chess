@@ -160,7 +160,25 @@ public class WebSocketHandler {
     }
 
     private void handleResign(UserGameCommand command, Session session) {
-        // stuff
+        try {
+            Integer gameID = command.getGameID();
+            Set<Session> gamePlayers = gameSessions.get(gameID);
+
+            if (gamePlayers == null) {
+                sendError(session, "Error: No game found to resign from");
+                return;
+            }
+
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            for (Session s : gamePlayers) {
+                s.getBasicRemote().sendText(gson.toJson(notification));
+            }
+
+
+        }
+        catch (IOException ex) {
+            sendError(session, "Error handling resign: " + ex.getMessage());
+        }
     }
 
     private boolean isValidAuthToken(String authToken) {
