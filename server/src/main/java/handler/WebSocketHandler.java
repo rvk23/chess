@@ -14,6 +14,7 @@ import dataaccess.DataAccessException;
 
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +29,8 @@ public class WebSocketHandler implements WebSocketListener {
     private static final ConcurrentHashMap<Session, String> sessionAuthTokens = new ConcurrentHashMap<>();
     private static final ConnectionManager connectionManager = new ConnectionManager();
     private static final GameDAO gameDAO = new GameDAO();
+    private static final ConcurrentHashMap<String, Session> authTokenSessions = new ConcurrentHashMap<>();
+
 
     private Session session;
 
@@ -44,7 +47,7 @@ public class WebSocketHandler implements WebSocketListener {
         try {
             UserGameCommand command = gson.fromJson(message, UserGameCommand.class);
             if (command.getCommandType() == null) {
-                sendError("Missing command type");
+                sendError(session, "Missing command type");
                 return;
             }
             switch (command.getCommandType()) {
@@ -56,7 +59,7 @@ public class WebSocketHandler implements WebSocketListener {
         }
         catch (Exception ex) {
             ex.printStackTrace();
-            sendError("Invalid WebSocket message: " + ex.getMessage());
+            sendError(session, "Invalid WebSocket message: " + ex.getMessage());
         }
     }
 
@@ -66,10 +69,11 @@ public class WebSocketHandler implements WebSocketListener {
 
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
-        sessionAuthTokens.remove(session);
-        for (Integer gameID : connectionManager.getAllGames()) {
-            connectionManager.removeConnection(gameID, session);
+        String authToken = sessionAuthTokens.remove(session);
+        if (authToken != null) {
+            authTokenSessions.remove(authToken);
         }
+        connectionManager.removeSession(session);
         System.out.println("Closed connection: " + session.getRemoteAddress());
     }
 
@@ -78,10 +82,10 @@ public class WebSocketHandler implements WebSocketListener {
         cause.printStackTrace();
     }
 
-    private void sendError(String errorMessage) {
+    private void sendError(Session sessionToSend, String errorMessage) {
         try {
             ServerMessage error = new ServerMessage(ServerMessage.ServerMessageType.ERROR, errorMessage);
-            session.getRemote().sendString(gson.toJson(error));
+            sessionToSend.getRemote().sendString(gson.toJson(error));
         }
         catch (IOException ex) {
             ex.printStackTrace();
@@ -89,22 +93,25 @@ public class WebSocketHandler implements WebSocketListener {
     }
 
 
+
+
     private void handleConnect(UserGameCommand command) {
         try {
             AuthDAO authDAO = new AuthDAO();
             AuthData authData = authDAO.getAuth(command.getAuthToken());
             if (authData == null) {
-                sendError("Error: Invalid auth token");
+                sendError(session, "Error: Invalid auth token");
                 return;
             }
             GameData gameData = gameDAO.getGame(command.getGameID());
             if (gameData == null) {
-                sendError("Error: Game not found");
+                sendError(session, "Error: Game not found");
                 return;
             }
 
             ChessGame game = gameData.game();
             sessionAuthTokens.put(session, command.getAuthToken());
+            authTokenSessions.put(command.getAuthToken(), session);
             connectionManager.addConnection(command.getGameID(), session);
 
             ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
@@ -116,7 +123,7 @@ public class WebSocketHandler implements WebSocketListener {
             connectionManager.broadcastToGameExceptSender(command.getGameID(), gson.toJson(notification), session);
         }
         catch (Exception ex) {
-            sendError("Error handling connect: " + ex.getMessage());
+            sendError(session, "Error handling connect: " + ex.getMessage());
         }
     }
 
@@ -128,7 +135,8 @@ public class WebSocketHandler implements WebSocketListener {
             if (authData != null) {
                 return authData.username();
             }
-        } catch (DataAccessException ex) {
+        }
+        catch (DataAccessException ex) {
             ex.printStackTrace();
         }
         return "Unknown";
@@ -138,34 +146,82 @@ public class WebSocketHandler implements WebSocketListener {
         try {
             ChessMove move = command.getMove();
             if (move == null) {
-                sendError("Error: No move provided");
+                sendError(session, "Error: No move provided");
                 return;
             }
+
             GameData gameData = gameDAO.getGame(command.getGameID());
             if (gameData == null) {
-                sendError("Error: Game not found");
+                sendError(session, "Error: Game not found");
                 return;
             }
-            ChessGame game = gameData.game();
-            game.makeMove(move);
 
-            GameData updatedGame = new GameData(gameData.gameID(),
-                    gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+            String authToken = command.getAuthToken();
+            AuthDAO authDAO = new AuthDAO();
+            AuthData authData = authDAO.getAuth(authToken);
+
+            if (authData == null) {
+                ChessGame.TeamColor currentTurn = gameData.game().getTeamTurn();
+                String playerToSend = (currentTurn == ChessGame.TeamColor.WHITE) ? gameData.whiteUsername() : gameData.blackUsername();
+
+                ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Invalid auth token");
+                String errorJson = gson.toJson(errorMessage);
+
+                sendErrorToUser(playerToSend, errorJson);
+
+                return;
+            }
+
+            String username = authData.username();
+            if (!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())) {
+                sendError(session, "Error: Observer cannot make a move");
+                return;
+            }
+
+            ChessGame game = gameData.game();
+
+            try {
+                game.makeMove(move);
+            }
+            catch (InvalidMoveException e) {
+
+                ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: Invalid move: " + e.getMessage());
+                String errorJson = gson.toJson(errorMessage);
+                sendErrorToUser(username, errorJson);
+                return;
+            }
+
+            GameData updatedGame = new GameData(
+                    gameData.gameID(),
+                    gameData.whiteUsername(),
+                    gameData.blackUsername(),
+                    gameData.gameName(),
+                    game
+            );
             gameDAO.updateGame(command.getGameID(), updatedGame);
 
             ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             loadGame.setGame(game);
             connectionManager.broadcastToGame(command.getGameID(), gson.toJson(loadGame));
 
-            String username = getUsernameFromAuthToken(sessionAuthTokens.get(session));
-            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                    username + " made a move.");
-            connectionManager.broadcastToGame(command.getGameID(), gson.toJson(notification));
+            String notificationMessage = username + " moved from " +
+                    posToString(move.getStartPosition()) + " to " +
+                    posToString(move.getEndPosition());
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notificationMessage);
+
+            Session moverSession = authTokenSessions.get(authToken);
+            connectionManager.broadcastToGameExceptSender(command.getGameID(), gson.toJson(notification), moverSession);
+
         }
         catch (Exception ex) {
-            sendError("Error handling move: " + ex.getMessage());
+            ex.printStackTrace();
+            sendError(session, "Error handling move: " + ex.getMessage());
         }
     }
+
+
+
+
 
     private void handleLeave(UserGameCommand command) {
         try {
@@ -177,7 +233,7 @@ public class WebSocketHandler implements WebSocketListener {
             session.close();
         }
         catch (Exception ex) {
-            sendError("Error handling leave: " + ex.getMessage());
+            sendError(session, "Error handling leave: " + ex.getMessage());
         }
     }
 
@@ -185,7 +241,7 @@ public class WebSocketHandler implements WebSocketListener {
         try {
             GameData gameData = gameDAO.getGame(command.getGameID());
             if (gameData == null) {
-                sendError("Error: Game not found");
+                sendError(session, "Error: Game not found");
                 return;
             }
 
@@ -195,9 +251,37 @@ public class WebSocketHandler implements WebSocketListener {
             connectionManager.broadcastToGame(command.getGameID(), gson.toJson(notification));
         }
         catch (Exception ex) {
-            sendError("Error handling resign: " + ex.getMessage());
+            sendError(session, "Error handling resign: " + ex.getMessage());
         }
     }
+
+
+    private String posToString(ChessPosition pos) {
+        char colChar = (char) ('a' + (pos.getColumn() - 1));
+        return "" + colChar + pos.getRow();
+    }
+
+
+    private void sendErrorToUser(String username, String errorJson) {
+        if (username == null) {
+            return;
+        }
+        for (var entry : sessionAuthTokens.entrySet()) {
+            Session session = entry.getKey();
+            String token = entry.getValue();
+            try {
+                AuthDAO authDAO = new AuthDAO();
+                AuthData authData = authDAO.getAuth(token);
+                if (authData != null && authData.username().equals(username)) {
+                    session.getRemote().sendString(errorJson);
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 
 
 }

@@ -30,12 +30,19 @@ public class ConnectionManager {
 
     public void broadcastToGame(int gameID, String message) {
         Set<Session> sessions = getConnections(gameID);
+        System.out.println("DEBUG: Broadcasting to " + sessions.size() + " sessions.");
         for (Session session : sessions) {
-            try {
-                session.getRemote().sendString(message);
+            if (session.isOpen()) {
+                try {
+                    System.out.println("DEBUG: Sending message to " + session.getRemoteAddress());
+                    session.getRemote().sendString(message);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            catch (Exception e) {
-                e.printStackTrace();
+            else {
+                System.out.println("DEBUG: Session closed: " + session.getRemoteAddress());
             }
         }
     }
@@ -43,7 +50,7 @@ public class ConnectionManager {
     public void broadcastToGameExceptSender(int gameID, String message, Session sender) {
         Set<Session> sessions = getConnections(gameID);
         for (Session session : sessions) {
-            if (!session.equals(sender)) {
+            if (!session.equals(sender) && session.isOpen()) {
                 try {
                     session.getRemote().sendString(message);
                 }
@@ -53,4 +60,11 @@ public class ConnectionManager {
             }
         }
     }
+
+    public void removeSession(Session session) {
+        for (Integer gameID : new HashSet<>(gameConnections.keySet())) {
+            removeConnection(gameID, session);
+        }
+    }
+
 }
