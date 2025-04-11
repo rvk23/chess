@@ -82,6 +82,45 @@ public class WebSocketHandler {
     private void handleConnect(Session session, UserGameCommand command) throws IOException {
 
         //stuff
+        try {
+            AuthData auth = authDAO.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(session, "Error: Invalid authToken");
+                return;
+            }
+
+            GameData gameData = gameDAO.getGame(command.getGameID());
+            if (gameData == null) {
+                sendError(session, "Error: Invalid gameID");
+                return;
+            }
+
+            String username = auth.username();
+            connectionManager.add(username, session, command.getGameID());
+            sessionUsernameMap.put(session, username);
+
+            ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+            loadGame.setGame(gameData.game());
+            session.getRemote().sendString(gson.toJson(loadGame));
+
+            String notificationMsg;
+            if (username.equals(gameData.whiteUsername())) {
+                notificationMsg = username + " joined as White";
+            }
+            else if (username.equals(gameData.blackUsername())) {
+                notificationMsg = username + " joined as Black";
+            }
+            else {
+                notificationMsg = username + " joined as Observer";
+            }
+
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notificationMsg);
+            connectionManager.broadcastToGameExcept(username, command.getGameID(), notification);
+
+        }
+        catch (DataAccessException e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
     }
 
 
