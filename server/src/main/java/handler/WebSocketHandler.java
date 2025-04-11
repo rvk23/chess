@@ -208,7 +208,7 @@ public class WebSocketHandler {
 
         }
         catch (DataAccessException e) {
-            sendError(session, "Error: " + e.getMessage());
+            sendError(session, e.getMessage());
         }
     }
 
