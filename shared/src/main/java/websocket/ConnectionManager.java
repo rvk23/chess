@@ -28,4 +28,33 @@ public class ConnectionManager {
     }
 
 
+    public List<Connection> getConnectionsInGame(int gameID) {
+        List<Connection> gameConnections = new ArrayList<>();
+        for (Connection conn : connections.values()) {
+            if (conn.gameID == gameID) {
+                gameConnections.add(conn);
+            }
+        }
+        return gameConnections;
+    }
+
+    public void broadcastToGameExcept(String excludeUsername, int gameID, ServerMessage message) throws IOException {
+        String msg = gson.toJson(message);
+        for (Connection conn : getConnectionsInGame(gameID)) {
+            if (!conn.username.equals(excludeUsername) && conn.session.isOpen()) {
+                conn.send(msg);
+            }
+        }
+    }
+
+    public void broadcastToGame(int gameID, ServerMessage message) throws IOException {
+        String msg = gson.toJson(message);
+        for (Connection conn : getConnectionsInGame(gameID)) {
+            if (conn.session.isOpen()) {
+                conn.send(msg);
+            }
+        }
+    }
+
+
 }
