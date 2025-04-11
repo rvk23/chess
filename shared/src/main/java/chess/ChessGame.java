@@ -96,6 +96,10 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (over) {
+            throw new InvalidMoveException("The game is already over.");
+        }
+
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
 
@@ -130,18 +134,22 @@ public class ChessGame {
         board.addPiece(endPosition, piece);
         board.addPiece(startPosition, null);
 
-        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && (endPosition.getRow() == 0 || endPosition.getRow() == 7)) {
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && (endPosition.getRow() == 1 || endPosition.getRow() == 8)) {
             if (move.getPromotionPiece() == null) {
                 throw new InvalidMoveException("Pawn needs to be promoted.");
             }
             board.addPiece(endPosition, new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
         }
 
-        if (turn == TeamColor.WHITE) {
-            turn = TeamColor.BLACK;
-        }
-        else {
-            turn = TeamColor.WHITE;
+        if (isInCheckmate(getOtherColor(turn)) || isInStalemate(getOtherColor(turn))) {
+            over = true;
+        } else {
+            if (turn == TeamColor.WHITE) {
+                turn = TeamColor.BLACK;
+            }
+            else {
+                turn = TeamColor.WHITE;
+            }
         }
 
     }

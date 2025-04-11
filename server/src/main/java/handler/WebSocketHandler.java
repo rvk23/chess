@@ -302,13 +302,57 @@ public class WebSocketHandler {
 
     private void handleDisplayMoves(Session session, UserGameCommand command) throws IOException {
         // display moves
+        try {
+            AuthData auth = authDAO.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(session, "Error: Invalid authToken");
+                return;
+            }
 
+            GameData gameData = gameDAO.getGame(command.getGameID());
+            if (gameData == null) {
+                sendError(session, "Error: Invalid gameID");
+                return;
+            }
+
+            ChessGame game = gameData.game();
+            var moves = game.validMoves(command.getPosition());
+
+            ServerMessage movesMessage = new ServerMessage(ServerMessage.ServerMessageType.MOVES);
+            movesMessage.setMoves(moves);
+            session.getRemote().sendString(gson.toJson(movesMessage));
+
+        }
+        catch (DataAccessException e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
     }
 
 
     private void handleRedraw(Session session, UserGameCommand command) throws IOException {
         // redraw board
+        try {
+            AuthData auth = authDAO.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(session, "Error: Invalid authToken");
+                return;
+            }
 
+            GameData gameData = gameDAO.getGame(command.getGameID());
+            if (gameData == null) {
+                sendError(session, "Error: Invalid gameID");
+                return;
+            }
+
+            ChessGame game = gameData.game();
+            ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+            loadGame.setGame(game);
+            session.getRemote().sendString(gson.toJson(loadGame));
+
+        }
+        catch (DataAccessException e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
     }
 
     private void sendError(Session session, String errorMessage) throws IOException {
