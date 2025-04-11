@@ -120,8 +120,6 @@ public class WebSocketHandler {
 
 
     private void handleMakeMove(Session session, UserGameCommand command) throws IOException {
-
-        //stuff
         try {
             System.out.println("[handleMakeMove] " + gson.toJson(command));
             AuthData auth = authDAO.getAuth(command.getAuthToken());
@@ -181,16 +179,31 @@ public class WebSocketHandler {
             ServerMessage moveNotification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, moveDesc);
             connectionManager.broadcastToGameExcept(auth.username(), command.getGameID(), moveNotification);
 
-            if (originalGame.isInCheck(originalGame.getTeamTurn())) {
-                ServerMessage checkMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                        "Check! " + originalGame.getTeamTurn() + " is in check!");
-                connectionManager.broadcastToGame(command.getGameID(), checkMsg);
-            }
+            ChessGame.TeamColor opponent = (moverColor == ChessGame.TeamColor.WHITE)
+                    ? ChessGame.TeamColor.BLACK
+                    : ChessGame.TeamColor.WHITE;
 
             if (originalGame.getGameOver()) {
+                if (originalGame.isInCheck(opponent)) {
+                    ServerMessage checkmateMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                            "Checkmate! " + opponent + " loses!");
+                    connectionManager.broadcastToGame(command.getGameID(), checkmateMsg);
+                }
+                else {
+                    ServerMessage stalemateMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                            "Stalemate!");
+                    connectionManager.broadcastToGame(command.getGameID(), stalemateMsg);
+                }
+
                 ServerMessage gameOverMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
                         "Game Over!");
                 connectionManager.broadcastToGame(command.getGameID(), gameOverMsg);
+
+            }
+            else if (originalGame.isInCheck(originalGame.getTeamTurn())) {
+                ServerMessage checkMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                        "Check! " + originalGame.getTeamTurn() + " is in check!");
+                connectionManager.broadcastToGame(command.getGameID(), checkMsg);
             }
 
         }
@@ -198,6 +211,7 @@ public class WebSocketHandler {
             sendError(session, "Error: " + e.getMessage());
         }
     }
+
 
 
 
