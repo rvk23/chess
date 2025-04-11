@@ -112,7 +112,7 @@ public class WebSocketHandler {
 
         }
         catch (DataAccessException e) {
-            sendError(session, "Error: " + e.getMessage());
+            sendError(session, e.getMessage());
         }
     }
 
@@ -155,7 +155,7 @@ public class WebSocketHandler {
                 cloneGame.makeMove(move);
             }
             catch (InvalidMoveException e) {
-                sendError(session, "Error: " + e.getMessage());
+                sendError(session, e.getMessage());
                 return;
             }
 
@@ -163,7 +163,7 @@ public class WebSocketHandler {
                 originalGame.makeMove(move);
             }
             catch (InvalidMoveException e) {
-                sendError(session, "Error: " + e.getMessage());
+                sendError(session,  e.getMessage());
                 return;
             }
 
@@ -256,7 +256,7 @@ public class WebSocketHandler {
 
         }
         catch (DataAccessException e) {
-            sendError(session, "Error: " + e.getMessage());
+            sendError(session, e.getMessage());
         }
     }
 
@@ -302,7 +302,7 @@ public class WebSocketHandler {
 
         }
         catch (DataAccessException e) {
-            sendError(session, "Error: " + e.getMessage());
+            sendError(session, e.getMessage());
         }
     }
 
@@ -348,7 +348,7 @@ public class WebSocketHandler {
 
         }
         catch (DataAccessException e) {
-            sendError(session, "Error: " + e.getMessage());
+            sendError(session, e.getMessage());
         }
     }
 
@@ -391,7 +391,7 @@ public class WebSocketHandler {
 
         }
         catch (DataAccessException e) {
-            sendError(session, "Error: " + e.getMessage());
+            sendError(session, e.getMessage());
         }
     }
 
