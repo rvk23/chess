@@ -7,27 +7,21 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 import com.google.gson.Gson;
-import chess.*;
 import dataaccess.GameDAO;
-import websocket.ConnectionManager;
+import server.ConnectionManager;
 import dataaccess.DataAccessException;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.InvalidMoveException;
-import chess.ChessPosition;
-import java.util.Collection;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
