@@ -23,7 +23,7 @@ public class ChessGame {
         turn = TeamColor.WHITE;
         board = new ChessBoard();
         board.resetBoard();
-
+        over = false;
 
     }
 
@@ -43,6 +43,15 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         turn = team;
+    }
+
+
+    public boolean getGameOver() {
+        return over;
+    }
+
+    public void setGameOver(boolean over) {
+        this.over = over;
     }
 
     /**
@@ -311,4 +320,17 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
+    private TeamColor getOtherColor(TeamColor color) {
+        return (color == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
+    }
+
+    public ChessGame deepCopy() {
+        ChessGame copy = new ChessGame();
+        copy.setBoard(this.board.deepCopy());
+        copy.setTeamTurn(this.turn);
+        copy.setGameOver(this.over);
+        return copy;
+    }
+
 }

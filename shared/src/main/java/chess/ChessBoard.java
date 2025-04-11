@@ -104,4 +104,18 @@ public class ChessBoard {
         // part 1 don't know why I didn't have 8 commits
         // part 2 don't know why I didn't have 8 commits
     }
+
+    public ChessBoard deepCopy() {
+        ChessBoard copy = new ChessBoard();
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPiece piece = this.getPiece(new ChessPosition(row, col));
+                if (piece != null) {
+                    copy.addPiece(new ChessPosition(row, col), new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
+                }
+            }
+        }
+        return copy;
+    }
+
 }

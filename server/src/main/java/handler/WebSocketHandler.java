@@ -129,6 +129,81 @@ public class WebSocketHandler {
     private void handleMakeMove(Session session, UserGameCommand command) throws IOException {
 
         //stuff
+        try {
+            System.out.println("[handleMakeMove] " + gson.toJson(command));
+            AuthData auth = authDAO.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(session, "Error: Invalid authToken");
+                return;
+            }
+
+            GameData gameData = gameDAO.getGame(command.getGameID());
+            if (gameData == null) {
+                sendError(session, "Error: Invalid gameID");
+                return;
+            }
+
+            ChessGame originalGame = gameData.game();
+            ChessMove move = command.getMove();
+            ChessPiece movingPiece = originalGame.getBoard().getPiece(move.getStartPosition());
+
+            if (movingPiece == null) {
+                sendError(session, "Error: No piece at start position");
+                return;
+            }
+
+            ChessGame.TeamColor moverColor = movingPiece.getTeamColor();
+            if ((moverColor == ChessGame.TeamColor.WHITE && !auth.username().equals(gameData.whiteUsername())) ||
+                    (moverColor == ChessGame.TeamColor.BLACK && !auth.username().equals(gameData.blackUsername()))) {
+                sendError(session, "Error: You cannot move this piece.");
+                return;
+            }
+
+            ChessGame cloneGame = originalGame.deepCopy();
+            try {
+                cloneGame.makeMove(move);
+            }
+            catch (InvalidMoveException e) {
+                sendError(session, "Error: " + e.getMessage());
+                return;
+            }
+
+            try {
+                originalGame.makeMove(move);
+            }
+            catch (InvalidMoveException e) {
+                sendError(session, "Error: " + e.getMessage());
+                return;
+            }
+
+            gameDAO.updateGame(gameData.gameID(), new GameData(
+                    gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), originalGame
+            ));
+
+            ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+            loadGame.setGame(originalGame);
+            connectionManager.broadcastToGame(command.getGameID(), loadGame);
+
+            String moveDesc = auth.username() + " moved from " + move.getStartPosition() + " to " + move.getEndPosition();
+            ServerMessage moveNotification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, moveDesc);
+            connectionManager.broadcastToGameExcept(auth.username(), command.getGameID(), moveNotification);
+
+            if (originalGame.isInCheck(originalGame.getTeamTurn())) {
+                ServerMessage checkMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                        "Check! " + originalGame.getTeamTurn() + " is in check!");
+                connectionManager.broadcastToGame(command.getGameID(), checkMsg);
+            }
+
+            if (originalGame.getGameOver()) {
+                ServerMessage gameOverMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                        "Game Over!");
+                connectionManager.broadcastToGame(command.getGameID(), gameOverMsg);
+            }
+
+        }
+        catch (DataAccessException e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
     }
 
 
