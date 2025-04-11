@@ -213,21 +213,102 @@ public class WebSocketHandler {
     private void handleLeave(Session session, UserGameCommand command) throws IOException {
 
         //stuff
+
+        try {
+            String username = sessionUsernameMap.remove(session);
+            if (username == null) {
+                return;
+            }
+
+            connectionManager.remove(username);
+
+            GameData gameData = gameDAO.getGame(command.getGameID());
+            if (gameData == null) {
+                return;
+            }
+
+            boolean updated = false;
+            ChessGame game = gameData.game();
+
+            if (username.equals(gameData.whiteUsername())) {
+                gameData = new GameData(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), game);
+                updated = true;
+            }
+            else if (username.equals(gameData.blackUsername())) {
+                gameData = new GameData(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), game);
+                updated = true;
+            }
+
+            if (updated) {
+                gameDAO.updateGame(gameData.gameID(), gameData);
+            }
+
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                    username + " left the game");
+            connectionManager.broadcastToGame(command.getGameID(), notification);
+
+        }
+        catch (DataAccessException e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
     }
 
     private void handleResign(Session session, UserGameCommand command) throws IOException {
 
         //stuff
+        try {
+            System.out.println("[handleResign] Resign request received.");
+            AuthData auth = authDAO.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(session, "Error: Invalid authToken");
+                return;
+            }
+
+            GameData gameData = gameDAO.getGame(command.getGameID());
+            if (gameData == null) {
+                sendError(session, "Error: Invalid gameID");
+                return;
+            }
+
+            ChessGame game = gameData.game();
+            String username = auth.username();
+
+            if (game.getGameOver()) {
+                sendError(session, "Error: Game is already over.");
+                return;
+            }
+
+            if (!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())) {
+                sendError(session, "Error: Observers cannot resign.");
+                return;
+            }
+
+            game.setGameOver(true);
+
+            gameDAO.updateGame(gameData.gameID(), new GameData(
+                    gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game
+            ));
+
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                    username + " resigned");
+            connectionManager.broadcastToGame(command.getGameID(), notification);
+
+        }
+        catch (DataAccessException e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
     }
 
 
     private void handleDisplayMoves(Session session, UserGameCommand command) throws IOException {
         // display moves
+
     }
 
 
     private void handleRedraw(Session session, UserGameCommand command) throws IOException {
         // redraw board
+
     }
 
     private void sendError(Session session, String errorMessage) throws IOException {
