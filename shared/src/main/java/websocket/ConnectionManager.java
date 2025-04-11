@@ -15,7 +15,17 @@ public class ConnectionManager {
     private final Map<String, Connection> connections = new ConcurrentHashMap<>();
     private final Gson gson = new Gson();
 
+    public void add(String username, Session session, int gameID) {
+        connections.put(username, new Connection(username, session, gameID));
+    }
 
+    public void remove(String username) {
+        connections.remove(username);
+    }
+
+    public Connection getConnection(String username) {
+        return connections.get(username);
+    }
 
 
 }
