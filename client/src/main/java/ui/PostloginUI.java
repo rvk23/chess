@@ -5,7 +5,6 @@ import model.AuthData;
 import model.GameData;
 
 import java.util.*;
-// wifi push
 
 public class PostloginUI {
 
@@ -13,7 +12,6 @@ public class PostloginUI {
     private final AuthData auth;
     private final Scanner scanner;
 
-    // actual game id
     private final Map<Integer, Integer> gameNumberToID = new HashMap<>();
 
     public PostloginUI(ServerFacade facade, AuthData auth, Scanner scanner) {
@@ -75,8 +73,7 @@ public class PostloginUI {
                         System.out.print("Enter game number to play: ");
                         int number = Integer.parseInt(scanner.nextLine().trim());
                         int gameID = gameNumberToID.getOrDefault(number, -1);
-                        if (gameID == -1) { throw new Exception("Invalid game number");}
-
+                        if (gameID == -1) { throw new Exception("Invalid game number"); }
 
                         GameData[] games = facade.listGames(auth.authToken());
                         GameData selectedGame = null;
@@ -86,7 +83,6 @@ public class PostloginUI {
                                 break;
                             }
                         }
-
 
                         if (selectedGame == null) {
                             throw new Exception("Game not found");
@@ -108,21 +104,10 @@ public class PostloginUI {
                             System.out.println("Joined game " + gameID + " as " + color);
                         }
 
-                        System.out.println("Drawing your board");
+                        System.out.println("Drawing your board...");
                         ChessBoardUI.drawBoard(auth.authToken(), facade, gameID, color);
 
-
-
-                        /*System.out.print("Play as WHITE or BLACK: ");
-                        String color = scanner.nextLine().trim().toUpperCase();
-
-                        facade.joinGame(auth.authToken(), gameID, color);
-                        System.out.println("Joined game " + gameID + " as " + color);
-                        System.out.println("Drawing initial board...");
-                        ChessBoardUI.drawBoard(auth.authToken(), facade, gameID, color);
-                        */
-
-
+                        GameUI.run(auth.authToken(), gameID, facade, color);
 
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
@@ -136,9 +121,8 @@ public class PostloginUI {
                         int number;
                         try {
                             number = Integer.parseInt(line);
-                        }
-                        catch (NumberFormatException e) {
-                            System.out.println("Please enter a valid number for input no letters.");
+                        } catch (NumberFormatException e) {
+                            System.out.println("Please enter a valid number for input (no letters).");
                             break;
                         }
 
@@ -147,9 +131,14 @@ public class PostloginUI {
                             System.out.println("Invalid game number.");
                             break;
                         }
+
                         facade.observeGame(auth.authToken(), gameID);
                         System.out.println("Observing game " + gameID);
+
                         ChessBoardUI.drawBoard(auth.authToken(), facade, gameID, "WHITE");
+
+                        GameUI.run(auth.authToken(), gameID, facade, "WHITE");
+
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }

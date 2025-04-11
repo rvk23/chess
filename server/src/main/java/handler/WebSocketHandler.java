@@ -1,6 +1,7 @@
 package handler;
 
 
+import chess.*;
 import dataaccess.*;
 import model.*;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -10,10 +11,6 @@ import com.google.gson.Gson;
 import dataaccess.GameDAO;
 import websocket.ConnectionManager;
 import dataaccess.DataAccessException;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.InvalidMoveException;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -21,6 +18,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -312,15 +311,48 @@ public class WebSocketHandler {
             ChessGame game = gameData.game();
             var moves = game.validMoves(command.getPosition());
 
+            Collection<ChessMove> flippedMoves = new ArrayList<>();
+            for (ChessMove move : moves) {
+                ChessMove flipped = flipMove(move);
+                flippedMoves.add(flipped);
+            }
+
             ServerMessage movesMessage = new ServerMessage(ServerMessage.ServerMessageType.MOVES);
-            movesMessage.setMoves(moves);
+            movesMessage.setMoves(flippedMoves);
             session.getRemote().sendString(gson.toJson(movesMessage));
+
+            if (flippedMoves.isEmpty()) {
+                System.out.println("[Game] >>> No legal moves available.");
+            }
+            else {
+                System.out.println("[Game] >>> Legal moves:");
+                for (ChessMove move : flippedMoves) {
+                    System.out.println("  " + positionToString(move.getStartPosition()) + " -> " + positionToString(move.getEndPosition()));
+                }
+            }
+
 
         }
         catch (DataAccessException e) {
             sendError(session, "Error: " + e.getMessage());
         }
     }
+
+    private ChessMove flipMove(ChessMove move) {
+        return new ChessMove(
+                flipPosition(move.getStartPosition()),
+                flipPosition(move.getEndPosition()),
+                move.getPromotionPiece()
+        );
+    }
+
+    private ChessPosition flipPosition(ChessPosition pos) {
+        int flippedRow = 8 - pos.getRow();
+        int col = pos.getColumn() + 1;
+        return new ChessPosition(flippedRow, col);
+    }
+
+
 
 
     private void handleRedraw(Session session, UserGameCommand command) throws IOException {
@@ -353,5 +385,11 @@ public class WebSocketHandler {
         ServerMessage error = new ServerMessage(ServerMessage.ServerMessageType.ERROR, errorMessage);
         session.getRemote().sendString(gson.toJson(error));
     }
+
+    private String positionToString(ChessPosition pos) {
+        char col = (char) ('a' + (pos.getColumn() - 1));
+        return "" + col + pos.getRow();
+    }
+
 
 }

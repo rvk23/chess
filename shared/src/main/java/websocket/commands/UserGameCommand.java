@@ -24,7 +24,7 @@ public class UserGameCommand {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
-        this.move = null;
+        this.move = move;
         this.position = position;
     }
 

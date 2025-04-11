@@ -4,14 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f33e15e-ae96-415e-909a-1e8f915d91ea" name="Changes" comment="fixing test mess up in auto grader">
+    <list default="true" id="9f33e15e-ae96-415e-909a-1e8f915d91ea" name="Changes" comment="adding files to build the client websocket">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/src/main/java/chess/ChessGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/main/java/chess/ChessGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/client/ServerFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/client/ServerFacade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/client/WebSocketClientManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/client/WebSocketClientManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/client/websocket/WebSocketConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/client/websocket/WebSocketConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/client/websocket/WebSocketFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/client/websocket/WebSocketFacade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/GameUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/GameUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/ui/PostloginUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/ui/PostloginUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/src/main/java/websocket/commands/UserGameCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/main/java/websocket/commands/UserGameCommand.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -47,10 +63,10 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/rylan/Desktop/goodChess/chess"
+    "last_opened_file_path": "C:/Users/rylan/Desktop/cs240/chess"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.passoff.chess in shared">
+  <component name="RunManager">
     <configuration name="WebSocketTests.moveAfterResign" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="server" />
       <extension name="coverage">
@@ -137,7 +153,23 @@
       <option name="project" value="LOCAL" />
       <updated>1744396097728</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="fixed the older tests to pass">
+      <option name="closed" value="true" />
+      <created>1744396931711</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1744396931711</updated>
+    </task>
+    <task id="LOCAL-00007" summary="adding files to build the client websocket">
+      <option name="closed" value="true" />
+      <created>1744397325293</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1744397325293</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -145,6 +177,8 @@
     <MESSAGE value="work space file??" />
     <MESSAGE value="Had to move around some files for the autograder" />
     <MESSAGE value="fixing test mess up in auto grader" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing test mess up in auto grader" />
+    <MESSAGE value="fixed the older tests to pass" />
+    <MESSAGE value="adding files to build the client websocket" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding files to build the client websocket" />
   </component>
 </project>
