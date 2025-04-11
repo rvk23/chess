@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f33e15e-ae96-415e-909a-1e8f915d91ea" name="Changes" comment="Had to move around some files for the autograder">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/test/java/passoff/server/WebSocketTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/test/java/passoff/server/WebSocketTests.java" afterDir="false" />
+    <list default="true" id="9f33e15e-ae96-415e-909a-1e8f915d91ea" name="Changes" comment="fixing test mess up in auto grader">
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/server/ConnectionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/websocket/ConnectionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/src/main/java/websocket/messages/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/websocket/messages/Connection.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,13 +106,22 @@
       <option name="project" value="LOCAL" />
       <updated>1744395099488</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="fixing test mess up in auto grader">
+      <option name="closed" value="true" />
+      <created>1744395251336</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744395251336</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Had to restart project was having errors. Also added re drawing the board" />
     <MESSAGE value="work space file??" />
     <MESSAGE value="Had to move around some files for the autograder" />
-    <option name="LAST_COMMIT_MESSAGE" value="Had to move around some files for the autograder" />
+    <MESSAGE value="fixing test mess up in auto grader" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixing test mess up in auto grader" />
   </component>
 </project>

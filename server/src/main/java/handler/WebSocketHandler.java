@@ -8,7 +8,7 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 import com.google.gson.Gson;
 import dataaccess.GameDAO;
-import server.ConnectionManager;
+import websocket.ConnectionManager;
 import dataaccess.DataAccessException;
 import chess.ChessGame;
 import chess.ChessMove;
