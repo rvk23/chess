@@ -1,6 +1,8 @@
 package websocket.messages;
 
 import java.util.Objects;
+import java.util.Collection;
+import chess.ChessMove;
 
 /**
  * Represents a Message the server can send through a WebSocket
@@ -13,11 +15,22 @@ public class ServerMessage {
     private String message;
     private String errorMessage;
     private Object game;
+    private Collection<ChessMove> moves;
 
     public enum ServerMessageType {
         LOAD_GAME,
         ERROR,
-        NOTIFICATION
+        NOTIFICATION,
+        MOVES,
+    }
+
+
+    public void setMoves(Collection<ChessMove> moves) {
+        this.moves = moves;
+    }
+
+    public Collection<ChessMove> getMoves() {
+        return moves;
     }
 
     public ServerMessage(ServerMessageType type) {
@@ -68,11 +81,12 @@ public class ServerMessage {
         return serverMessageType == that.serverMessageType &&
                 Objects.equals(message, that.message) &&
                 Objects.equals(errorMessage, that.errorMessage) &&
-                Objects.equals(game, that.game);
+                Objects.equals(game, that.game) &&
+                Objects.equals(moves, that.moves);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getServerMessageType());
+        return Objects.hash(getServerMessageType(), message, errorMessage, game, moves);
     }
 }
