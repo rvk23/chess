@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f33e15e-ae96-415e-909a-1e8f915d91ea" name="Changes" comment="work space file??">
+    <list default="true" id="9f33e15e-ae96-415e-909a-1e8f915d91ea" name="Changes" comment="Had to move around some files for the autograder">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/test/java/passoff/server/WebSocketTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/test/java/passoff/server/WebSocketTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/src/main/java/websocket/ConnectionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/server/ConnectionManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/starter-code/6-gameplay/passoff/server/WebSocketTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/starter-code/6-gameplay/passoff/server/WebSocketTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,18 +36,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.WebSocketTests.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.WebSocketTests.moveAfterResign.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/rylan/Desktop/goodChess/chess&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "JUnit.WebSocketTests.executor": "Run",
+    "JUnit.WebSocketTests.moveAfterResign.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/rylan/Desktop/goodChess/chess"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="WebSocketTests.moveAfterResign" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="server" />
@@ -99,12 +97,21 @@
       <option name="project" value="LOCAL" />
       <updated>1744394352022</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Had to move around some files for the autograder">
+      <option name="closed" value="true" />
+      <created>1744395099488</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1744395099488</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Had to restart project was having errors. Also added re drawing the board" />
     <MESSAGE value="work space file??" />
-    <option name="LAST_COMMIT_MESSAGE" value="work space file??" />
+    <MESSAGE value="Had to move around some files for the autograder" />
+    <option name="LAST_COMMIT_MESSAGE" value="Had to move around some files for the autograder" />
   </component>
 </project>

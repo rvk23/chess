@@ -347,7 +347,7 @@ public class WebSocketTests {
 
         assertCommandMessages(actualMessages, true, sender, types(), inGame, types(NOTIFICATION), otherClients);
     }
-    
+
     private Map<String, Integer> expectedMessages(WebsocketUser sender, int senderExpected,
                                                   Set<WebsocketUser> inGame, int inGameExpected, Set<WebsocketUser> otherClients) {
         Map<String, Integer> expectedMessages = new HashMap<>();
@@ -358,9 +358,9 @@ public class WebSocketTests {
     }
 
     private void assertCommandMessages(Map<String, List<TestMessage>> messages, boolean expectSuccess,
-                                            WebsocketUser user, ServerMessage.ServerMessageType[] userExpectedTypes,
-                                            Set<WebsocketUser> inGame, ServerMessage.ServerMessageType[] inGameExpectedTypes,
-                                            Set<WebsocketUser> otherClients) {
+                                       WebsocketUser user, ServerMessage.ServerMessageType[] userExpectedTypes,
+                                       Set<WebsocketUser> inGame, ServerMessage.ServerMessageType[] inGameExpectedTypes,
+                                       Set<WebsocketUser> otherClients) {
         if(!expectSuccess) {
             userExpectedTypes = new ServerMessage.ServerMessageType[]{ERROR};
             inGameExpectedTypes = new ServerMessage.ServerMessageType[0];
@@ -394,7 +394,7 @@ public class WebSocketTests {
     }
 
     private void assertLoadGame(String username, TestMessage message) {
-        Assertions.assertEquals(LOAD_GAME, message.getServerMessageType(),
+        Assertions.assertEquals(ServerMessage.ServerMessageType.LOAD_GAME, message.getServerMessageType(),
                 "Message for %s was not a LOAD_GAME message: %s".formatted(username, message));
         Assertions.assertNotNull(message.getGame(),
                 "%s's LOAD_GAME message did not contain a game (Make sure it's specifically called 'game')".formatted(username));
@@ -405,7 +405,7 @@ public class WebSocketTests {
     }
 
     private void assertNotification(String username, TestMessage message) {
-        Assertions.assertEquals(NOTIFICATION, message.getServerMessageType(),
+        Assertions.assertEquals(ServerMessage.ServerMessageType.NOTIFICATION, message.getServerMessageType(),
                 "Message for %s was not a NOTIFICATION message: %s".formatted(username, message));
         Assertions.assertNotNull(message.getMessage(),
                 "%s's NOTIFICATION message did not contain a message (Make sure it's specifically called 'message')".formatted(username));
@@ -416,7 +416,7 @@ public class WebSocketTests {
     }
 
     private void assertError(String username, TestMessage message) {
-        Assertions.assertEquals(ERROR, message.getServerMessageType(),
+        Assertions.assertEquals(ServerMessage.ServerMessageType.ERROR, message.getServerMessageType(),
                 "Message for %s was not an ERROR message: %s".formatted(username, message));
         Assertions.assertNotNull(message.getErrorMessage(),
                 "%s's ERROR message did not contain an error message (Make sure it's specifically called 'errorMessage')".formatted(username));
