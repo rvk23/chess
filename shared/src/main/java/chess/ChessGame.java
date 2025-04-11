@@ -134,7 +134,7 @@ public class ChessGame {
         board.addPiece(endPosition, piece);
         board.addPiece(startPosition, null);
 
-        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && (endPosition.getRow() == 1 || endPosition.getRow() == 8)) {
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && (endPosition.getRow() == 0 || endPosition.getRow() == 7)) {
             if (move.getPromotionPiece() == null) {
                 throw new InvalidMoveException("Pawn needs to be promoted.");
             }

@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f33e15e-ae96-415e-909a-1e8f915d91ea" name="Changes" comment="fixing test mess up in auto grader">
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/server/ConnectionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/websocket/ConnectionManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/src/main/java/websocket/messages/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/websocket/messages/Connection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/src/main/java/chess/ChessGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/main/java/chess/ChessGame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +41,7 @@
     "Application.Main.executor": "Run",
     "JUnit.WebSocketTests.executor": "Run",
     "JUnit.WebSocketTests.moveAfterResign.executor": "Run",
+    "JUnit.passoff.chess in shared.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
@@ -50,7 +50,7 @@
     "last_opened_file_path": "C:/Users/rylan/Desktop/goodChess/chess"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.passoff.chess in shared">
     <configuration name="WebSocketTests.moveAfterResign" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="server" />
       <extension name="coverage">
@@ -67,8 +67,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="passoff.chess in shared" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="shared" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="passoff.chess.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="passoff.chess" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.passoff.chess in shared" />
         <item itemvalue="JUnit.WebSocketTests.moveAfterResign" />
       </list>
     </recent_temporary>
@@ -114,7 +129,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744395251336</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fixing test mess up in auto grader">
+      <option name="closed" value="true" />
+      <created>1744396097728</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1744396097728</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
