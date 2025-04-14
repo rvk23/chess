@@ -97,7 +97,16 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         if (over) {
-            throw new InvalidMoveException("The game is already over.");
+            TeamColor opponent = getOtherColor(turn);
+            if (isInStalemate(opponent)) {
+                throw new InvalidMoveException("The game is already over due to Stalemate.");
+            }
+            else if (isInCheckmate(opponent)) {
+                throw new InvalidMoveException("The game is already over due to Checkmate.");
+            }
+            else {
+                throw new InvalidMoveException("The game is already over.");
+            }
         }
 
         ChessPosition startPosition = move.getStartPosition();

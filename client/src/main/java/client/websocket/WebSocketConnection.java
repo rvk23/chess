@@ -44,7 +44,7 @@ public class WebSocketConnection {
                 System.out.println("[Notification] " + serverMessage.message());
             }
             case "ERROR" -> {
-                System.out.println("[Error] " + serverMessage.errorMessage());
+                System.out.println(serverMessage.errorMessage());
             }
             case "LOAD_GAME" -> {
                 System.out.println("[Board update] (game reloaded)");

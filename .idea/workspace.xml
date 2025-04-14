@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f33e15e-ae96-415e-909a-1e8f915d91ea" name="Changes" comment="fix json">
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/handler/WebSocketHandler.java" afterDir="false" />
+    <list default="true" id="9f33e15e-ae96-415e-909a-1e8f915d91ea" name="Changes" comment="fix error">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/client/websocket/WebSocketConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/client/websocket/WebSocketConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/src/main/java/chess/ChessGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/main/java/chess/ChessGame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +185,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744409301232</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fix error">
+      <option name="closed" value="true" />
+      <created>1744409466257</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1744409466257</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -196,6 +206,7 @@
     <MESSAGE value="got all the client working" />
     <MESSAGE value="fixed for game over" />
     <MESSAGE value="fix json" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix json" />
+    <MESSAGE value="fix error" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix error" />
   </component>
 </project>
